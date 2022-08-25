@@ -1,0 +1,14 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/simrat39/dev/simwm'
+ 
+/usr/bin/wayland-scanner server-header \
+	//usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml xdg-shell-protocol.h
+/usr/bin/wayland-scanner server-header \
+	protocols/wlr-layer-shell-unstable-v1.xml wlr-layer-shell-unstable-v1-protocol.h
+cc  \
+	-g -Werror -I. \
+	-DWLR_USE_UNSTABLE \
+	-o simwm simwm.c output.c server.c input.c cursor.c keyboard.c xdg_shell.c layer_shell.c xdg-shell-protocol.h wlr-layer-shell-unstable-v1-protocol.h \
+	-I/usr/include/libdrm -I/usr/include/pixman-1 -lwlroots  -lwayland-server  -lxkbcommon 
+make: Leaving directory '/home/simrat39/dev/simwm'
+ 
