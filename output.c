@@ -37,7 +37,7 @@ void server_new_output(struct wl_listener *listener, void *data) {
 
   struct simwm_output *output = calloc(1, sizeof(struct simwm_output));
   output->wlr_output = wlr_output;
-  wlr_output->data = wlr_output;
+  wlr_output->data = output;
 
   output->frame.notify = on_output_frame;
   wl_signal_add(&wlr_output->events.frame, &output->frame);
