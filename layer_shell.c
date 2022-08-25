@@ -104,38 +104,40 @@ void on_layer_surface_commit(struct wl_listener *listener, void *data) {
     }
     break;
   case SIMWM_ANCHOR_TOP:
-    pos_x = 0;
     pos_y = 0;
 
     if (desired_width == 0) {
       configured_width = monitor_width;
     }
+
+    pos_x = (monitor_width / 2) - (configured_width / 2);
     break;
   case SIMWM_ANCHOR_BOTTOM:
-    pos_x = 0;
     pos_y = monitor_height - configured_height;
 
     if (desired_width == 0) {
       configured_width = monitor_width;
     }
+
+    pos_x = (monitor_width / 2) - (configured_width / 2);
     break;
   case SIMWM_ANCHOR_LEFT:
     pos_x = 0;
-    pos_y = monitor_height / 2;
 
     if (desired_height == 0) {
-      pos_y = 0;
       configured_height = monitor_height;
     }
+
+    pos_y = (monitor_height / 2) - (configured_height / 2);
     break;
   case SIMWM_ANCHOR_RIGHT:
     pos_x = monitor_width - configured_width;
-    pos_y = monitor_height / 2;
 
     if (desired_height == 0) {
-      pos_y = 0;
       configured_height = monitor_height;
     }
+
+    pos_y = (monitor_height / 2) - (configured_height / 2);
     break;
   case SIMWM_ANCHOR_TOP_LEFT:
     pos_x = 0;
