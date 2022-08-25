@@ -8,6 +8,7 @@
 #include "layer_shell.h"
 #include "output.h"
 #include "server.h"
+#include "view.h"
 #include "wlr-layer-shell-unstable-v1-protocol.h"
 #include "xdg_shell.h"
 
@@ -215,9 +216,8 @@ void on_new_xdg_surface(struct wl_listener *listener, void *data) {
 }
 
 void focus_view(struct simwm_view *view, struct wlr_surface *surface) {
-  if (view == NULL) {
-    return;
-  }
+  assert(view != NULL);
+  assert(view->type == SIMWM_VIEW_XDG);
 
   struct wlr_surface *prev_surface =
       server->seat->keyboard_state.focused_surface;

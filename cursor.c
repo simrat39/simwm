@@ -1,8 +1,8 @@
 #include <includes.h>
 
-#include <view.h>
 #include <cursor.h>
 #include <server.h>
+#include <view.h>
 
 #include <stdint.h>
 
@@ -84,8 +84,7 @@ void on_cursor_motion_absolute(struct wl_listener *listener, void *data) {
 }
 
 void on_cursor_button(struct wl_listener *listener, void *data) {
-  struct wlr_pointer_button_event *event =
-      data;
+  struct wlr_pointer_button_event *event = data;
 
   wlr_seat_pointer_notify_button(server->seat, event->time_msec, event->button,
                                  event->state);
@@ -96,15 +95,14 @@ void on_cursor_button(struct wl_listener *listener, void *data) {
   struct simwm_view *view =
       view_at(server->cursor->x, server->cursor->y, &surface, &sx, &sy);
 
-  if (view == NULL) {
-    return;
-  }
-
   struct wlr_keyboard *keyboard = wlr_seat_get_keyboard(server->seat);
 
   if (event->state == WLR_BUTTON_RELEASED) {
     server->cursor_mode = SIMWL_CURSOR_PASSTHROUGH;
   } else {
+    if (view == NULL || view->type == SIMWM_VIEW_LAYER) {
+      return;
+    }
     focus_view(view, surface);
   }
 }

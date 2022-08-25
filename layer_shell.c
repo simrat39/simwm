@@ -196,4 +196,5 @@ void on_new_layer_surface(struct wl_listener *listener, void *data) {
 
   view->scene_tree = wlr_scene_subsurface_tree_create(
       server->layers[layer_surface->pending.layer], layer_surface->surface);
+  view->scene_tree->node.data = view;
 }
