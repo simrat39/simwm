@@ -1,6 +1,6 @@
 #include "input.h"
-#include "xdg_shell.h"
 #include "layer_shell.h"
+#include "xdg_shell.h"
 #include <cursor.h>
 #include <includes.h>
 #include <output.h>
@@ -72,6 +72,11 @@ void simwm_server_init() {
   server->new_layer_surface.notify = on_new_layer_surface;
   wl_signal_add(&server->layer_shell->events.new_surface,
                 &server->new_layer_surface);
+
+  server->layers[0] = wlr_scene_tree_create(&server->scene->tree);
+  server->layers[1] = wlr_scene_tree_create(&server->scene->tree);
+  server->layers[2] = wlr_scene_tree_create(&server->scene->tree);
+  server->layers[3] = wlr_scene_tree_create(&server->scene->tree);
 
   cursor_init();
   cursor_events_init();

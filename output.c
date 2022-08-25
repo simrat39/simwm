@@ -39,13 +39,6 @@ void server_new_output(struct wl_listener *listener, void *data) {
   output->wlr_output = wlr_output;
   wlr_output->data = wlr_output;
 
-  output->server = server;
-
-  server->layers[0] = wlr_scene_tree_create(&server->scene->tree);
-  server->layers[1] = wlr_scene_tree_create(&server->scene->tree);
-  server->layers[2] = wlr_scene_tree_create(&server->scene->tree);
-  server->layers[3] = wlr_scene_tree_create(&server->scene->tree);
-
   output->frame.notify = on_output_frame;
   wl_signal_add(&wlr_output->events.frame, &output->frame);
 
