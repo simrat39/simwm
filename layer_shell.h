@@ -25,15 +25,4 @@ enum simwm_layer {
   LAYER_COUNT,
 };
 
-struct simwm_layer_surface {
-  struct wlr_layer_surface_v1 *layer_surface;
-
-  struct wlr_output *output;
-
-  struct wlr_scene_tree *scene;
-
-  struct wl_listener map;
-  struct wl_listener commit;
-};
-
 void on_new_layer_surface(struct wl_listener *, void *);

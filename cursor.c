@@ -1,6 +1,6 @@
 #include <includes.h>
 
-#include "xdg_shell.h"
+#include <view.h>
 #include <cursor.h>
 #include <server.h>
 

@@ -1,4 +1,5 @@
 #include "output.h"
+#include "view.h"
 #include "wlr-layer-shell-unstable-v1-protocol.h"
 #include <includes.h>
 #include <layer_shell.h>
@@ -10,8 +11,7 @@
 #include <wlr/util/log.h>
 
 void on_layer_surface_map(struct wl_listener *listener, void *data) {
-  struct simwm_layer_surface *simwm_layer =
-      wl_container_of(listener, simwm_layer, map);
+  struct simwm_view *simwm_layer = wl_container_of(listener, simwm_layer, map);
 
   wlr_log(WLR_INFO, "mapped");
 }
@@ -59,24 +59,19 @@ enum simwm_anchor parse_anchor(int anchor) {
 }
 
 void on_layer_surface_commit(struct wl_listener *listener, void *data) {
-  struct simwm_layer_surface *simwm_layer =
-      wl_container_of(listener, simwm_layer, commit);
+  struct simwm_view *view = wl_container_of(listener, view, commit);
 
-  if (simwm_layer->layer_surface->current.committed == 0) {
+  if (view->layer_surface->current.committed == 0) {
     return;
   }
 
-  struct wlr_output *output = simwm_layer->output;
-  if (output == NULL) {
-    output = wlr_output_layout_get_center_output(server->output_layout);
-  }
-
   int monitor_width, monitor_height;
-  wlr_output_effective_resolution(output, &monitor_width, &monitor_height);
-  const int wlr_anchor = simwm_layer->layer_surface->pending.anchor;
+  wlr_output_effective_resolution(view->output, &monitor_width,
+                                  &monitor_height);
+  const int wlr_anchor = view->layer_surface->pending.anchor;
 
-  int desired_width = simwm_layer->layer_surface->pending.desired_width;
-  int desired_height = simwm_layer->layer_surface->pending.desired_height;
+  int desired_width = view->layer_surface->pending.desired_width;
+  int desired_height = view->layer_surface->pending.desired_height;
 
   int configured_width = desired_width;
   int configured_height = desired_height;
@@ -164,9 +159,9 @@ void on_layer_surface_commit(struct wl_listener *listener, void *data) {
     break;
   }
 
-  wlr_layer_surface_v1_configure(simwm_layer->layer_surface, configured_width,
+  wlr_layer_surface_v1_configure(view->layer_surface, configured_width,
                                  configured_height);
-  wlr_scene_node_set_position(&simwm_layer->scene->node, pos_x, pos_y);
+  wlr_scene_node_set_position(&view->scene_tree->node, pos_x, pos_y);
 }
 
 void on_new_layer_surface(struct wl_listener *listener, void *data) {
@@ -183,18 +178,22 @@ void on_new_layer_surface(struct wl_listener *listener, void *data) {
       layer_surface->pending.margin.right, layer_surface->pending.margin.bottom,
       layer_surface->pending.margin.left);
 
-  struct simwm_layer_surface *simwm_layer =
-      calloc(1, sizeof(struct simwm_layer_surface));
-  simwm_layer->layer_surface = layer_surface;
-  simwm_layer->output = layer_surface->output;
+  struct simwm_view *view = calloc(1, sizeof(struct simwm_view));
+  struct wlr_output *wlr_output = layer_surface->output;
+  if (wlr_output == NULL) {
+    wlr_output = wlr_output_layout_get_center_output(server->output_layout);
+  }
 
-  simwm_layer->commit.notify = on_layer_surface_commit;
-  wl_signal_add(&simwm_layer->layer_surface->surface->events.commit,
-                &simwm_layer->commit);
+  view->type = SIMWM_VIEW_LAYER;
+  view->layer_surface = layer_surface;
+  view->output = wlr_output;
 
-  simwm_layer->map.notify = on_layer_surface_map;
-  wl_signal_add(&simwm_layer->layer_surface->events.map, &simwm_layer->map);
+  view->commit.notify = on_layer_surface_commit;
+  wl_signal_add(&view->layer_surface->surface->events.commit, &view->commit);
 
-  simwm_layer->scene = wlr_scene_subsurface_tree_create(
+  view->map.notify = on_layer_surface_map;
+  wl_signal_add(&view->layer_surface->events.map, &view->map);
+
+  view->scene_tree = wlr_scene_subsurface_tree_create(
       server->layers[layer_surface->pending.layer], layer_surface->surface);
 }

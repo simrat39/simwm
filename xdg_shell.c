@@ -8,6 +8,7 @@
 #include "layer_shell.h"
 #include "output.h"
 #include "server.h"
+#include "view.h"
 #include "wlr-layer-shell-unstable-v1-protocol.h"
 #include "xdg_shell.h"
 
@@ -60,8 +61,6 @@ void on_map(struct wl_listener *listener, void *data) {
   wlr_log(WLR_INFO, "Mapped window: %s", view->xdg_toplevel->title);
 
   wlr_xdg_toplevel_set_activated(view->xdg_toplevel, true);
-
-  /* wl_list_insert(&server->views, &view->link); */
 
   if (server->master == NULL) {
     server->master = view;
@@ -186,10 +185,10 @@ void on_new_xdg_surface(struct wl_listener *listener, void *data) {
   assert(xdg_surface->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL);
 
   struct simwm_view *view = calloc(1, sizeof(struct simwm_view));
+  view->type = SIMWM_VIEW_XDG;
   view->xdg_toplevel = xdg_surface->toplevel;
-  view->scene_tree = wlr_scene_xdg_surface_create(
-      server->layers[LAYER_TILE],
-      view->xdg_toplevel->base);
+  view->scene_tree = wlr_scene_xdg_surface_create(server->layers[LAYER_TILE],
+                                                  view->xdg_toplevel->base);
   view->scene_tree->node.data = view;
   xdg_surface->data = view->scene_tree;
 
