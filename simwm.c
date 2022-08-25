@@ -4,12 +4,13 @@
 
 #include <stdlib.h>
 #include <unistd.h>
+#include <wlr/util/log.h>
 
 struct simwm_server *server;
 
 int main() {
   // Initialize wlr logging
-  wlr_log_init(WLR_DEBUG, NULL);
+  wlr_log_init(WLR_INFO, NULL);
 
   simwm_server_init();
 
@@ -26,6 +27,7 @@ int main() {
     wlr_backend_destroy(server->backend);
     wl_display_destroy(server->wl_display);
   }
+
   /* Set the WAYLAND_DISPLAY environment variable to our socket and run the
    * startup command if requested. */
   setenv("WAYLAND_DISPLAY", socket, true);
