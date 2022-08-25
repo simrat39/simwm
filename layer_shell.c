@@ -81,22 +81,31 @@ void on_layer_surface_commit(struct wl_listener *listener, void *data) {
   int pos_y = 0;
 
   enum simwm_anchor anchor = parse_anchor(wlr_anchor);
+  wlr_log(WLR_INFO, "anchor %d", anchor);
   switch (anchor) {
   case SIMWM_ANCHOR_ALL:
     pos_x = monitor_width / 2;
     pos_y = monitor_height / 2;
 
     if (desired_height == 0) {
-      pos_x = 0;
+      pos_y = 0;
       configured_height = monitor_height;
     }
 
     if (desired_width == 0) {
-      pos_y = 0;
+      pos_x = 0;
       configured_width = monitor_width;
     }
     break;
   case SIMWM_ANCHOR_HORIZONTAL:
+    pos_x = monitor_width / 2;
+    pos_y = 0;
+
+    if (desired_width == 0) {
+      pos_x = 0;
+      configured_width = monitor_width;
+    }
+    break;
   case SIMWM_ANCHOR_VERTICAL:
   case SIMWM_ANCHOR_TOP_LEFT:
     pos_x = 0;
