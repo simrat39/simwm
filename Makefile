@@ -16,7 +16,7 @@ wlr-layer-shell-unstable-v1-protocol.h:
 	$(WAYLAND_SCANNER) server-header \
 		protocols/wlr-layer-shell-unstable-v1.xml $@
 
-simwm: simwm.c output.c server.c input.c cursor.c keyboard.c xdg_shell.c layer_shell.c xdg-shell-protocol.h wlr-layer-shell-unstable-v1-protocol.h
+simwm: simwm.c output.c server.c input.c cursor.c keyboard.c xdg_shell.c layer_shell.c view.c xdg-shell-protocol.h wlr-layer-shell-unstable-v1-protocol.h
 	$(CC) $(CFLAGS) \
 		-g -Werror -I. \
 		-DWLR_USE_UNSTABLE \

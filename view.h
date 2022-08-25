@@ -1,4 +1,7 @@
+#pragma once
+
 #include <wayland-server-core.h>
+#include <wlr/types/wlr_compositor.h>
 
 enum simwm_view_type { SIMWM_VIEW_XDG, SIMWM_VIEW_LAYER };
 
@@ -25,3 +28,6 @@ struct simwm_view {
 
   int x, y;
 };
+
+struct simwm_view *view_at(double lx, double ly, struct wlr_surface **surface,
+                           double *sx, double *sy);
