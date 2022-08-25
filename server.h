@@ -33,6 +33,8 @@ struct simwm_server {
   struct wlr_layer_shell_v1 *layer_shell;
   struct wl_listener new_layer_surface;
 
+  struct wlr_scene_tree *layers[4];
+
   struct simwm_view *grabbed_view;
   double grab_x;
   double grab_y;

@@ -8,9 +8,7 @@ struct simwm_output {
   struct wl_list link;
 
   struct wlr_output *wlr_output;
-
-  struct wlr_scene_tree *layers[4];
-
+  struct simwm_server *server;
   struct wl_listener frame;
 };
 

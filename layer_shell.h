@@ -19,7 +19,7 @@ enum simwm_anchor {
 struct simwm_layer_surface {
   struct wlr_layer_surface_v1 *layer_surface;
 
-  struct simwm_output *output;
+  struct wlr_output *output;
 
   struct wlr_scene_tree *scene;
 
