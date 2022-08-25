@@ -170,23 +170,22 @@ void on_request_maximize(struct wl_listener *listener, void *data) {
 void on_new_xdg_surface(struct wl_listener *listener, void *data) {
   struct wlr_xdg_surface *xdg_surface = data;
 
+  struct simwm_view *view = calloc(1, sizeof(struct simwm_view));
+  view->type = SIMWM_VIEW_XDG;
+
   /* We must add xdg popups to the scene graph so they get rendered. The
    * wlroots scene graph provides a helper for this, but to use it we must
    * provide the proper parent scene node of the xdg popup. To enable this,
    * we always set the user data field of xdg_surfaces to the corresponding
    * scene node. */
   if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_POPUP) {
-    struct wlr_xdg_surface *parent =
-        wlr_xdg_surface_from_wlr_surface(xdg_surface->popup->parent);
-    struct wlr_scene_tree *parent_tree = parent->data;
-    xdg_surface->data = wlr_scene_xdg_surface_create(parent_tree, xdg_surface);
+    view->scene_tree = wlr_scene_xdg_surface_create(server->layers[LAYER_TOP], xdg_surface);
+
     return;
   }
 
   assert(xdg_surface->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL);
 
-  struct simwm_view *view = calloc(1, sizeof(struct simwm_view));
-  view->type = SIMWM_VIEW_XDG;
   view->xdg_toplevel = xdg_surface->toplevel;
   view->scene_tree = wlr_scene_xdg_surface_create(server->layers[LAYER_TILE],
                                                   view->xdg_toplevel->base);
