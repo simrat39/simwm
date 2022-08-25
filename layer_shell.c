@@ -27,14 +27,6 @@ enum simwm_anchor parse_anchor(int anchor) {
   if (all)
     return SIMWM_ANCHOR_ALL;
 
-  int both_vert = top && bottom;
-  if (both_vert)
-    return SIMWM_ANCHOR_VERTICAL;
-
-  int both_horiz = left && right;
-  if (both_horiz)
-    return SIMWM_ANCHOR_HORIZONTAL;
-
   if (top) {
     if (left) {
       return SIMWM_ANCHOR_TOP_LEFT;
@@ -42,6 +34,7 @@ enum simwm_anchor parse_anchor(int anchor) {
     if (right) {
       return SIMWM_ANCHOR_TOP_RIGHT;
     }
+    return SIMWM_ANCHOR_TOP;
   }
 
   if (bottom) {
@@ -51,6 +44,15 @@ enum simwm_anchor parse_anchor(int anchor) {
     if (right) {
       return SIMWM_ANCHOR_BOTTOM_RIGHT;
     }
+    return SIMWM_ANCHOR_BOTTOM;
+  }
+
+  if (left) {
+    return SIMWM_ANCHOR_LEFT;
+  }
+
+  if (right) {
+    return SIMWM_ANCHOR_RIGHT;
   }
 
   return SIMWM_ANCHOR_NONE;
@@ -81,7 +83,14 @@ void on_layer_surface_commit(struct wl_listener *listener, void *data) {
   int pos_y = 0;
 
   enum simwm_anchor anchor = parse_anchor(wlr_anchor);
-  wlr_log(WLR_INFO, "anchor %d", anchor);
+  wlr_log(WLR_INFO, "sim anchor %d", anchor);
+  wlr_log(WLR_INFO, "wlr anchor %d", wlr_anchor);
+  wlr_log(WLR_INFO, "test anchor b %d",
+          wlr_anchor & ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM);
+  wlr_log(WLR_INFO, "test anchor l %d",
+          wlr_anchor & ZWLR_LAYER_SURFACE_V1_ANCHOR_LEFT);
+  wlr_log(WLR_INFO, "test anchor r %d",
+          wlr_anchor & ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT);
   switch (anchor) {
   case SIMWM_ANCHOR_ALL:
     pos_x = monitor_width / 2;
@@ -97,16 +106,40 @@ void on_layer_surface_commit(struct wl_listener *listener, void *data) {
       configured_width = monitor_width;
     }
     break;
-  case SIMWM_ANCHOR_HORIZONTAL:
-    pos_x = monitor_width / 2;
+  case SIMWM_ANCHOR_TOP:
+    pos_x = 0;
     pos_y = 0;
 
     if (desired_width == 0) {
-      pos_x = 0;
       configured_width = monitor_width;
     }
     break;
-  case SIMWM_ANCHOR_VERTICAL:
+  case SIMWM_ANCHOR_BOTTOM:
+    pos_x = 0;
+    pos_y = monitor_height - configured_height;
+
+    if (desired_width == 0) {
+      configured_width = monitor_width;
+    }
+    break;
+  case SIMWM_ANCHOR_LEFT:
+    pos_x = 0;
+    pos_y = monitor_height / 2;
+
+    if (desired_height == 0) {
+      pos_y = 0;
+      configured_height = monitor_height;
+    }
+    break;
+  case SIMWM_ANCHOR_RIGHT:
+    pos_x = monitor_width - configured_width;
+    pos_y = monitor_height / 2;
+
+    if (desired_height == 0) {
+      pos_y = 0;
+      configured_height = monitor_height;
+    }
+    break;
   case SIMWM_ANCHOR_TOP_LEFT:
     pos_x = 0;
     pos_y = 0;
