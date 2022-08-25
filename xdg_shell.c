@@ -185,9 +185,15 @@ void on_new_xdg_surface(struct wl_listener *listener, void *data) {
   assert(xdg_surface->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL);
 
   struct simwm_view *view = calloc(1, sizeof(struct simwm_view));
+
+  struct wlr_output *output =
+      wlr_output_layout_get_center_output(server->output_layout);
+  struct simwm_output *simwm_output = simwm_output_from_wlr_output(output);
+
   view->xdg_toplevel = xdg_surface->toplevel;
-  view->scene_tree = wlr_scene_xdg_surface_create(server->layers[ZWLR_LAYER_SHELL_V1_LAYER_BOTTOM],
-                                                  view->xdg_toplevel->base);
+  view->scene_tree = wlr_scene_xdg_surface_create(
+      simwm_output->layers[ZWLR_LAYER_SHELL_V1_LAYER_BOTTOM],
+      view->xdg_toplevel->base);
   view->scene_tree->node.data = view;
   xdg_surface->data = view->scene_tree;
 

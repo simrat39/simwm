@@ -1,3 +1,4 @@
+#include "wlr-layer-shell-unstable-v1-protocol.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -38,6 +39,12 @@ void server_new_output(struct wl_listener *listener, void *data) {
   struct simwm_output *output = calloc(1, sizeof(struct simwm_output));
   output->wlr_output = wlr_output;
   wlr_output->data = output;
+
+  output->layers[ZWLR_LAYER_SHELL_V1_LAYER_BACKGROUND] =
+      wlr_scene_tree_create(&server->scene->tree);
+  output->layers[ZWLR_LAYER_SHELL_V1_LAYER_BOTTOM] = wlr_scene_tree_create(&server->scene->tree);
+  output->layers[ZWLR_LAYER_SHELL_V1_LAYER_TOP] = wlr_scene_tree_create(&server->scene->tree);
+  output->layers[ZWLR_LAYER_SHELL_V1_LAYER_OVERLAY] = wlr_scene_tree_create(&server->scene->tree);
 
   output->frame.notify = on_output_frame;
   wl_signal_add(&wlr_output->events.frame, &output->frame);

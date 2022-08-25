@@ -73,11 +73,6 @@ void simwm_server_init() {
   wl_signal_add(&server->layer_shell->events.new_surface,
                 &server->new_layer_surface);
 
-  server->layers[0] = wlr_scene_tree_create(&server->scene->tree);
-  server->layers[1] = wlr_scene_tree_create(&server->scene->tree);
-  server->layers[2] = wlr_scene_tree_create(&server->scene->tree);
-  server->layers[3] = wlr_scene_tree_create(&server->scene->tree);
-
   cursor_init();
   cursor_events_init();
 
