@@ -17,38 +17,38 @@ void on_layer_surface_map(struct wl_listener *listener, void *data) {
 }
 
 enum simwm_anchor parse_anchor(int anchor) {
-  int top = ZWLR_LAYER_SURFACE_V1_ANCHOR_TOP;
-  int left = ZWLR_LAYER_SURFACE_V1_ANCHOR_LEFT;
-  int right = ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT;
-  int bottom = ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM;
+  int top = anchor & ZWLR_LAYER_SURFACE_V1_ANCHOR_TOP;
+  int left = anchor & ZWLR_LAYER_SURFACE_V1_ANCHOR_LEFT;
+  int right = anchor & ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT;
+  int bottom = anchor & ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM;
 
-  int all = left & right & top & bottom;
+  int all = left && right && top && bottom;
 
-  if (anchor & all)
+  if (all)
     return SIMWM_ANCHOR_ALL;
 
-  int both_vert = top & bottom;
-  if (anchor & both_vert)
+  int both_vert = top && bottom;
+  if (both_vert)
     return SIMWM_ANCHOR_VERTICAL;
 
-  int both_horiz = left & right;
-  if (anchor & both_horiz)
+  int both_horiz = left && right;
+  if (both_horiz)
     return SIMWM_ANCHOR_HORIZONTAL;
 
-  if (anchor & top) {
-    if (anchor & left) {
+  if (top) {
+    if (left) {
       return SIMWM_ANCHOR_TOP_LEFT;
     }
-    if (anchor & right) {
+    if (right) {
       return SIMWM_ANCHOR_TOP_RIGHT;
     }
   }
 
-  if (anchor & bottom) {
-    if (anchor & left) {
+  if (bottom) {
+    if (left) {
       return SIMWM_ANCHOR_BOTTOM_LEFT;
     }
-    if (anchor & right) {
+    if (right) {
       return SIMWM_ANCHOR_BOTTOM_RIGHT;
     }
   }
@@ -76,31 +76,31 @@ void on_layer_surface_commit(struct wl_listener *listener, void *data) {
   int desired_width = layer_surface->layer_surface->pending.desired_width;
   int desired_height = layer_surface->layer_surface->pending.desired_height;
 
-  int configured_width;
-  int configured_height;
+  int configured_width = desired_width;
+  int configured_height = desired_height;
 
-  enum simwm_anchor anchor = parse_anchor(anchor);
+  enum simwm_anchor anchor = parse_anchor(wlr_anchor);
   switch (anchor) {
   case SIMWM_ANCHOR_ALL:
-    configured_height = monitor_height;
-    configured_width = monitor_width;
+    wlr_log(WLR_INFO, "dw %d dh %d", desired_width, desired_height);
+    if (desired_height == 0) {
+      configured_height = monitor_height;
+    }
+
+    if (desired_width == 0) {
+      configured_width = monitor_width;
+    }
     break;
   case SIMWM_ANCHOR_HORIZONTAL:
-    configured_height = desired_height;
-    configured_width = monitor_width;
-    break;
   case SIMWM_ANCHOR_VERTICAL:
-    configured_height = monitor_width;
-    configured_width = desired_width;
-    break;
   case SIMWM_ANCHOR_TOP_LEFT:
   case SIMWM_ANCHOR_TOP_RIGHT:
   case SIMWM_ANCHOR_BOTTOM_LEFT:
   case SIMWM_ANCHOR_BOTTOM_RIGHT:
-    configured_height = desired_height;
-    configured_width = desired_width;
     break;
   case SIMWM_ANCHOR_NONE:
+    configured_width = 0;
+    configured_height = 0;
     break;
   }
 
