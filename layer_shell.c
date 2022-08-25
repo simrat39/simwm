@@ -79,24 +79,42 @@ void on_layer_surface_commit(struct wl_listener *listener, void *data) {
   int configured_width = desired_width;
   int configured_height = desired_height;
 
+  int pos_x = 0;
+  int pos_y = 0;
+
   enum simwm_anchor anchor = parse_anchor(wlr_anchor);
   switch (anchor) {
   case SIMWM_ANCHOR_ALL:
-    wlr_log(WLR_INFO, "dw %d dh %d", desired_width, desired_height);
+    pos_x = monitor_width / 2;
+    pos_y = monitor_height / 2;
+
     if (desired_height == 0) {
+      pos_x = 0;
       configured_height = monitor_height;
     }
 
     if (desired_width == 0) {
+      pos_y = 0;
       configured_width = monitor_width;
     }
     break;
   case SIMWM_ANCHOR_HORIZONTAL:
   case SIMWM_ANCHOR_VERTICAL:
   case SIMWM_ANCHOR_TOP_LEFT:
+    pos_x = 0;
+    pos_y = 0;
+    break;
   case SIMWM_ANCHOR_TOP_RIGHT:
+    pos_x = monitor_width - configured_width;
+    pos_y = 0;
+    break;
   case SIMWM_ANCHOR_BOTTOM_LEFT:
+    pos_x = 0;
+    pos_y = monitor_height - configured_height;
+    break;
   case SIMWM_ANCHOR_BOTTOM_RIGHT:
+    pos_x = monitor_width - configured_width;
+    pos_y = monitor_height - configured_height;
     break;
   case SIMWM_ANCHOR_NONE:
     configured_width = 0;
@@ -106,6 +124,7 @@ void on_layer_surface_commit(struct wl_listener *listener, void *data) {
 
   wlr_layer_surface_v1_configure(layer_surface->layer_surface, configured_width,
                                  configured_height);
+  wlr_scene_node_set_position(&layer_surface->scene->node, pos_x, pos_y);
 }
 
 void arrange_layers() {
@@ -150,8 +169,8 @@ void on_new_layer_surface(struct wl_listener *listener, void *data) {
   simwm_layer->map.notify = on_layer_surface_map;
   wl_signal_add(&simwm_layer->layer_surface->events.map, &simwm_layer->map);
 
-  wlr_scene_subsurface_tree_create(server->layers[layer_surface->pending.layer],
-                                   layer_surface->surface);
+  simwm_layer->scene = wlr_scene_subsurface_tree_create(
+      server->layers[layer_surface->pending.layer], layer_surface->surface);
 
   arrange_layers();
 }
