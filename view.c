@@ -30,7 +30,6 @@ struct simwm_view *view_at(double lx, double ly, struct wlr_surface **surface,
   }
 
   if (tree == NULL) {
-    wlr_log(WLR_INFO, "wtfrick");
     return NULL;
   }
 

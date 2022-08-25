@@ -89,4 +89,8 @@ void simwm_server_init() {
   wl_signal_add(&server->backend->events.new_input, &server->new_input);
 
   server->seat = wlr_seat_create(server->wl_display, "seat0");
+
+  server->request_cursor.notify = on_seat_request_cursor;
+  wl_signal_add(&server->seat->events.request_set_cursor,
+                &server->request_cursor);
 }

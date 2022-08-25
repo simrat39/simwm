@@ -5,6 +5,8 @@
 #include <view.h>
 
 #include <stdint.h>
+#include <wayland-util.h>
+#include <wlr/util/log.h>
 
 void cursor_init() {
   // A cursor is a wlroots utility to track cursor movement on the screen.
@@ -56,9 +58,6 @@ void process_cursor_motion(uint32_t time) {
   if (!view) {
     wlr_xcursor_manager_set_cursor_image(server->cursor_mgr, "left_ptr",
                                          server->cursor);
-  } else {
-    wlr_xcursor_manager_set_cursor_image(server->cursor_mgr, "crosshair",
-                                         server->cursor);
   }
 
   if (surface) {
@@ -104,5 +103,17 @@ void on_cursor_button(struct wl_listener *listener, void *data) {
       return;
     }
     focus_view(view, surface);
+  }
+}
+
+void on_seat_request_cursor(struct wl_listener *listener, void *data) {
+  struct wlr_seat_pointer_request_set_cursor_event *event = data;
+  struct wlr_seat_client *focused_client =
+      server->seat->pointer_state.focused_client;
+
+  // Can be sent by any client, so check if client is focused
+  if (focused_client == event->seat_client) {
+    wlr_cursor_set_surface(server->cursor, event->surface, event->hotspot_x,
+                           event->hotspot_y);
   }
 }

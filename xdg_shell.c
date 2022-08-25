@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <includes.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <wayland-util.h>
@@ -226,7 +227,7 @@ void focus_view(struct simwm_view *view, struct wlr_surface *surface) {
     return;
   }
 
-  if (prev_surface) {
+  if (prev_surface && wlr_surface_is_xdg_surface(prev_surface)) {
     struct wlr_xdg_surface *prev_xdg_surface =
         wlr_xdg_surface_from_wlr_surface(prev_surface);
     assert(prev_xdg_surface->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL);
