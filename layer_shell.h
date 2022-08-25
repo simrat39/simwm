@@ -3,10 +3,21 @@
 #include "output.h"
 #include <wayland-server-core.h>
 
+enum simwm_anchor {
+  SIMWM_ANCHOR_ALL,
+  SIMWM_ANCHOR_HORIZONTAL,
+  SIMWM_ANCHOR_VERTICAL,
+  SIMWM_ANCHOR_TOP_LEFT,
+  SIMWM_ANCHOR_TOP_RIGHT,
+  SIMWM_ANCHOR_BOTTOM_LEFT,
+  SIMWM_ANCHOR_BOTTOM_RIGHT,
+  SIMWM_ANCHOR_NONE,
+};
+
 struct simwm_layer_surface {
   struct wlr_layer_surface_v1 *layer_surface;
 
-  struct simwm_output *output;
+  struct wlr_output *output;
 
   struct wlr_scene_tree *scene;
 
