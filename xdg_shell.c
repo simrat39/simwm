@@ -5,6 +5,7 @@
 #include <wayland-util.h>
 #include <wlr/util/log.h>
 
+#include "layer_shell.h"
 #include "output.h"
 #include "server.h"
 #include "wlr-layer-shell-unstable-v1-protocol.h"
@@ -186,8 +187,9 @@ void on_new_xdg_surface(struct wl_listener *listener, void *data) {
 
   struct simwm_view *view = calloc(1, sizeof(struct simwm_view));
   view->xdg_toplevel = xdg_surface->toplevel;
-  view->scene_tree = wlr_scene_xdg_surface_create(server->layers[ZWLR_LAYER_SHELL_V1_LAYER_BOTTOM],
-                                                  view->xdg_toplevel->base);
+  view->scene_tree = wlr_scene_xdg_surface_create(
+      server->layers[LAYER_TILE],
+      view->xdg_toplevel->base);
   view->scene_tree->node.data = view;
   xdg_surface->data = view->scene_tree;
 

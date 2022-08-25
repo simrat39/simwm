@@ -16,6 +16,15 @@ enum simwm_anchor {
   SIMWM_ANCHOR_NONE,
 };
 
+enum simwm_layer {
+  LAYER_BG,
+  LAYER_BOTTOM,
+  LAYER_TOP,
+  LAYER_OVERLAY,
+  LAYER_TILE,
+  LAYER_COUNT,
+};
+
 struct simwm_layer_surface {
   struct wlr_layer_surface_v1 *layer_surface;
 

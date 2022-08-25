@@ -169,22 +169,6 @@ void on_layer_surface_commit(struct wl_listener *listener, void *data) {
   wlr_scene_node_set_position(&simwm_layer->scene->node, pos_x, pos_y);
 }
 
-void arrange_layers() {
-  wlr_scene_node_lower_to_bottom(
-      &server->layers[ZWLR_LAYER_SHELL_V1_LAYER_BACKGROUND]->node);
-
-  wlr_scene_node_raise_to_top(
-      &server->layers[ZWLR_LAYER_SHELL_V1_LAYER_OVERLAY]->node);
-
-  wlr_scene_node_place_above(
-      &server->layers[ZWLR_LAYER_SHELL_V1_LAYER_BOTTOM]->node,
-      &server->layers[ZWLR_LAYER_SHELL_V1_LAYER_BACKGROUND]->node);
-
-  wlr_scene_node_place_above(
-      &server->layers[ZWLR_LAYER_SHELL_V1_LAYER_TOP]->node,
-      &server->layers[ZWLR_LAYER_SHELL_V1_LAYER_BOTTOM]->node);
-}
-
 void on_new_layer_surface(struct wl_listener *listener, void *data) {
   struct wlr_layer_surface_v1 *layer_surface = data;
 
@@ -213,6 +197,4 @@ void on_new_layer_surface(struct wl_listener *listener, void *data) {
 
   simwm_layer->scene = wlr_scene_subsurface_tree_create(
       server->layers[layer_surface->pending.layer], layer_surface->surface);
-
-  arrange_layers();
 }
