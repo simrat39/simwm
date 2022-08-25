@@ -245,6 +245,10 @@ struct simwm_view *view_at(double lx, double ly, struct wlr_surface **surface,
     tree = tree->node.parent;
   }
 
+  if (tree == NULL) {
+    return NULL;
+  }
+
   return tree->node.data;
 }
 
