@@ -57,24 +57,24 @@ enum simwm_anchor parse_anchor(int anchor) {
 }
 
 void on_layer_surface_commit(struct wl_listener *listener, void *data) {
-  struct simwm_layer_surface *layer_surface =
-      wl_container_of(listener, layer_surface, commit);
+  struct simwm_layer_surface *simwm_layer =
+      wl_container_of(listener, simwm_layer, commit);
 
-  if (layer_surface->layer_surface->current.committed == 0) {
+  if (simwm_layer->layer_surface->current.committed == 0) {
     return;
   }
 
-  struct wlr_output *output = layer_surface->output;
+  struct wlr_output *output = simwm_layer->output;
   if (output == NULL) {
     output = wlr_output_layout_get_center_output(server->output_layout);
   }
 
   int monitor_width, monitor_height;
   wlr_output_effective_resolution(output, &monitor_width, &monitor_height);
-  const int wlr_anchor = layer_surface->layer_surface->pending.anchor;
+  const int wlr_anchor = simwm_layer->layer_surface->pending.anchor;
 
-  int desired_width = layer_surface->layer_surface->pending.desired_width;
-  int desired_height = layer_surface->layer_surface->pending.desired_height;
+  int desired_width = simwm_layer->layer_surface->pending.desired_width;
+  int desired_height = simwm_layer->layer_surface->pending.desired_height;
 
   int configured_width = desired_width;
   int configured_height = desired_height;
@@ -122,9 +122,9 @@ void on_layer_surface_commit(struct wl_listener *listener, void *data) {
     break;
   }
 
-  wlr_layer_surface_v1_configure(layer_surface->layer_surface, configured_width,
+  wlr_layer_surface_v1_configure(simwm_layer->layer_surface, configured_width,
                                  configured_height);
-  wlr_scene_node_set_position(&layer_surface->scene->node, pos_x, pos_y);
+  wlr_scene_node_set_position(&simwm_layer->scene->node, pos_x, pos_y);
 }
 
 void arrange_layers() {
