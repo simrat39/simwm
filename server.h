@@ -24,9 +24,6 @@ struct simwm_server {
   struct wl_list outputs;
   struct wl_listener new_output;
 
-  struct simwm_view *master;
-  struct wl_list children;
-
   struct wl_list views;
   struct wlr_xdg_shell *xdg_shell;
   struct wl_listener new_xdg_surface;

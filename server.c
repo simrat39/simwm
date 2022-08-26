@@ -64,7 +64,6 @@ void simwm_server_init() {
 
   // Setup xdg-shell which is a wayland protocol to manage application windows.
   wl_list_init(&server->views);
-  wl_list_init(&server->children);
   server->xdg_shell = wlr_xdg_shell_create(server->wl_display, 4);
   server->new_xdg_surface.notify = on_new_xdg_surface;
   wl_signal_add(&server->xdg_shell->events.new_surface,

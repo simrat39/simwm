@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <wayland-server-core.h>
 #include <wayland-util.h>
 #include <wlr/util/log.h>
 
@@ -13,63 +14,11 @@
 #include "wlr-layer-shell-unstable-v1-protocol.h"
 #include "xdg_shell.h"
 
-void set_layout() {
-  struct wlr_output *output =
-      wlr_output_layout_get_center_output(server->output_layout);
-
-  int master_width = output->width * 0.8;
-  int master_height = output->height;
-
-  if (server->master == NULL) {
-    return;
-  }
-
-  wlr_log(WLR_ERROR, "%s", server->master->xdg_toplevel->app_id);
-  wlr_xdg_toplevel_set_size(server->master->xdg_toplevel, master_width,
-                            master_height);
-
-  wlr_scene_node_set_position(&server->master->scene_tree->node, 0, 0);
-
-  int current_child_count = 0;
-  int total_child_count = wl_list_length(&server->children);
-
-  if (total_child_count == 0) {
-    return;
-  }
-
-  int child_height = master_height / total_child_count;
-  int child_width = output->width * 0.2;
-
-  int x = master_width;
-
-  struct simwm_view *child_view;
-  wl_list_for_each_reverse(child_view, &server->children, layout_link) {
-    int y = current_child_count * child_height;
-
-    wlr_xdg_toplevel_set_size(child_view->xdg_toplevel, child_width,
-                              child_height);
-    wlr_scene_node_set_position(&child_view->scene_tree->node, x, y);
-
-    child_view->x = x;
-    child_view->y = y;
-
-    current_child_count++;
-  }
-}
-
 void on_map(struct wl_listener *listener, void *data) {
   struct simwm_view *view = wl_container_of(listener, view, map);
   wlr_log(WLR_INFO, "Mapped window: %s", view->xdg_toplevel->title);
 
   wlr_xdg_toplevel_set_activated(view->xdg_toplevel, true);
-
-  if (server->master == NULL) {
-    server->master = view;
-  } else {
-    wl_list_insert(&server->children, &view->layout_link);
-  }
-
-  set_layout();
 
   struct wlr_keyboard *keyboard = wlr_seat_get_keyboard(server->seat);
   wlr_seat_keyboard_notify_enter(
@@ -80,25 +29,6 @@ void on_map(struct wl_listener *listener, void *data) {
 void on_unmap(struct wl_listener *listener, void *data) {
   struct simwm_view *view = wl_container_of(listener, view, unmap);
   wlr_log(WLR_INFO, "Unmapped window: %s", view->xdg_toplevel->title);
-
-  if (view == server->master) {
-    int child_count = wl_list_length(&server->children);
-
-    if (child_count == 0) {
-      server->master = NULL;
-    } else {
-      wlr_log(WLR_INFO, "hi");
-      struct simwm_view *first_child =
-          wl_container_of(server->children.next, first_child, layout_link);
-
-      wl_list_remove(&first_child->layout_link);
-      server->master = first_child;
-    }
-  } else {
-    wl_list_remove(&view->layout_link);
-  }
-
-  set_layout();
 }
 
 void on_destroy(struct wl_listener *listener, void *data) {
@@ -179,7 +109,8 @@ void on_new_xdg_surface(struct wl_listener *listener, void *data) {
    * we always set the user data field of xdg_surfaces to the corresponding
    * scene node. */
   if (xdg_surface->role == WLR_XDG_SURFACE_ROLE_POPUP) {
-    view->scene_tree = wlr_scene_xdg_surface_create(server->layers[LAYER_TOP], xdg_surface);
+    view->scene_tree =
+        wlr_scene_xdg_surface_create(server->layers[LAYER_TOP], xdg_surface);
 
     return;
   }
