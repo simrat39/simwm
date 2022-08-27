@@ -1,5 +1,6 @@
 #pragma once
 
+#include "layer_shell.h"
 #include "wlr-layer-shell-unstable-v1-protocol.h"
 #include <wayland-server-core.h>
 #include <wayland-util.h>
@@ -10,6 +11,8 @@ struct simwm_output {
   struct wlr_output *wlr_output;
   struct simwm_server *server;
   struct wl_listener frame;
+
+  struct wl_list layer_views[LAYER_COUNT];
 };
 
 void server_new_output(struct wl_listener *, void *);

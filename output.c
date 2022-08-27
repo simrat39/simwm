@@ -4,6 +4,7 @@
 #include <includes.h>
 #include <output.h>
 #include <server.h>
+#include <wayland-util.h>
 
 void on_output_frame(struct wl_listener *listener, void *data) {
   struct simwm_output *output = wl_container_of(listener, output, frame);
@@ -41,6 +42,10 @@ void server_new_output(struct wl_listener *listener, void *data) {
 
   output->frame.notify = on_output_frame;
   wl_signal_add(&wlr_output->events.frame, &output->frame);
+
+  for (int i = 0; i < LAYER_COUNT; i++) {
+    wl_list_init(&output->layer_views[i]);
+  }
 
   /* output->destroy.notify = output_destroy; */
   /* wl_signal_add(&wlr_output->events.destroy, &output->destroy); */

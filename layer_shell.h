@@ -1,6 +1,5 @@
 #pragma once
 
-#include "output.h"
 #include <wayland-server-core.h>
 
 enum simwm_anchor {
