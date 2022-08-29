@@ -24,4 +24,21 @@ enum simwm_layer {
   LAYER_COUNT,
 };
 
+struct simwm_layer_surface {
+  // the view related to this layer surface.
+  struct simwm_view *view;
+
+  struct simwm_output *output;
+  struct wlr_scene_layer_surface_v1 *scene;
+  struct wlr_scene_tree *popup_scene;
+  
+  bool mapped;
+
+  struct wl_listener commit;
+  struct wl_listener map;
+  struct wl_listener unmap;
+  struct wl_listener destroy;
+  struct wl_listener new_popup;
+};
+
 void on_new_layer_surface(struct wl_listener *, void *);

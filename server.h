@@ -1,7 +1,6 @@
 #pragma once
 
 #include "layer_shell.h"
-#include "xdg_shell.h"
 #include <wayland-server-core.h>
 #include <wayland-util.h>
 

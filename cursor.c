@@ -39,7 +39,7 @@ void process_cursor_move(uint32_t time) {
   view->x = server->cursor->x - server->grab_x;
   view->y = server->cursor->y - server->grab_y;
 
-  wlr_scene_node_set_position(&view->scene_tree->node, view->x, view->y);
+  wlr_scene_node_set_position(&view->xdg->scene->node, view->x, view->y);
 }
 
 void process_cursor_motion(uint32_t time) {
@@ -58,6 +58,7 @@ void process_cursor_motion(uint32_t time) {
   if (!view) {
     wlr_xcursor_manager_set_cursor_image(server->cursor_mgr, "left_ptr",
                                          server->cursor);
+    return;
   }
 
   if (surface) {
@@ -99,7 +100,7 @@ void on_cursor_button(struct wl_listener *listener, void *data) {
   if (event->state == WLR_BUTTON_RELEASED) {
     server->cursor_mode = SIMWL_CURSOR_PASSTHROUGH;
   } else {
-    if (view == NULL || view->type == SIMWM_VIEW_LAYER) {
+    if (!view) {
       return;
     }
     focus_view(view, surface);
