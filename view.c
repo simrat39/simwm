@@ -84,6 +84,7 @@ void focus_view(struct simwm_view *view, struct wlr_surface *surface) {
     break;
   case SIMWM_VIEW_POPUP:
     wlr_log(WLR_INFO, "HERE LOL POPUP");
+
     wlr_scene_node_raise_to_top(&view->popup->scene->node);
     if (keyboard != NULL) {
       wlr_seat_keyboard_notify_enter(

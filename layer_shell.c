@@ -58,14 +58,16 @@ void on_layer_new_popup(struct wl_listener *listener, void *data) {
 
 void on_layer_surface_map(struct wl_listener *listener, void *data) {
   struct simwm_layer_surface *layer = wl_container_of(listener, layer, map);
-  configure_all_layers(layer->output);
-  wlr_seat_keyboard_notify_enter(
-      server->seat, layer->scene->layer_surface->surface,
-      server->seat->keyboard_state.keyboard->keycodes,
-      server->seat->keyboard_state.keyboard->num_keycodes,
-      &server->seat->keyboard_state.keyboard->modifiers);
 
-  wlr_log(WLR_INFO, "mapped");
+  if (layer->scene->layer_surface->current.keyboard_interactive) {
+    wlr_seat_keyboard_notify_enter(
+        server->seat, layer->scene->layer_surface->surface,
+        server->seat->keyboard_state.keyboard->keycodes,
+        server->seat->keyboard_state.keyboard->num_keycodes,
+        &server->seat->keyboard_state.keyboard->modifiers);
+
+    configure_all_layers(layer->output);
+  }
 }
 
 void on_layer_surface_unmap(struct wl_listener *listener, void *data) {
@@ -76,7 +78,6 @@ void on_layer_surface_unmap(struct wl_listener *listener, void *data) {
 
 void on_layer_surface_destroy(struct wl_listener *listener, void *data) {
   struct simwm_layer_surface *layer = wl_container_of(listener, layer, destroy);
-  configure_all_layers(layer->output);
 
   wl_list_remove(&layer->map.link);
   wl_list_remove(&layer->unmap.link);

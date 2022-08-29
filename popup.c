@@ -32,7 +32,6 @@ void on_popup_destroy(struct wl_listener *listener, void *data) {
 
   free(popup->view);
   free(popup);
-  wlr_log(WLR_INFO, "POPUP destroy");
 }
 
 void unconstrain_popup(struct simwm_popup *popup) {

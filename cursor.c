@@ -86,8 +86,6 @@ void on_cursor_motion_absolute(struct wl_listener *listener, void *data) {
 void on_cursor_button(struct wl_listener *listener, void *data) {
   struct wlr_pointer_button_event *event = data;
 
-  wlr_seat_pointer_notify_button(server->seat, event->time_msec, event->button,
-                                 event->state);
 
   struct wlr_surface *surface = NULL;
   double sx, sy;
@@ -105,6 +103,10 @@ void on_cursor_button(struct wl_listener *listener, void *data) {
     }
     focus_view(view, surface);
   }
+
+
+  wlr_seat_pointer_notify_button(server->seat, event->time_msec, event->button,
+                                 event->state);
 }
 
 void on_seat_request_cursor(struct wl_listener *listener, void *data) {
