@@ -4,15 +4,10 @@
 
 #include <includes.h>
 #include <output.h>
+#include <popup.h>
 #include <server.h>
 #include <wayland-util.h>
 #include <wlr/util/log.h>
-#include <popup.h>
-
-void on_popup_map(struct wl_listener *listener, void *data) {
-  struct simwm_popup *popup = wl_container_of(listener, popup, popup_map);
-  wlr_log(WLR_INFO, "POPUP map");
-}
 
 void on_popup_new_popup(struct wl_listener *listener, void *data) {
   struct simwm_popup *popup = wl_container_of(listener, popup, popup_new_popup);
@@ -26,7 +21,6 @@ void on_popup_new_popup(struct wl_listener *listener, void *data) {
 void on_popup_destroy(struct wl_listener *listener, void *data) {
   struct simwm_popup *popup = wl_container_of(listener, popup, popup_destroy);
 
-  wl_list_remove(&popup->popup_map.link);
   wl_list_remove(&popup->popup_destroy.link);
   wl_list_remove(&popup->popup_new_popup.link);
 
@@ -69,9 +63,6 @@ void create_popup(struct wlr_xdg_popup *xdg_popup, struct simwm_view *parent) {
   popup->scene =
       wlr_scene_xdg_surface_create(parent->layer->popup_scene, xdg_popup->base);
   popup->scene->node.data = view;
-
-  popup->popup_map.notify = on_popup_map;
-  wl_signal_add(&xdg_popup->base->events.map, &popup->popup_map);
 
   popup->popup_destroy.notify = on_popup_destroy;
   wl_signal_add(&xdg_popup->base->events.destroy, &popup->popup_destroy);
