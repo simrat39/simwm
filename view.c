@@ -76,7 +76,7 @@ void focus_view(struct simwm_view *view, struct wlr_surface *surface) {
     }
     break;
   case SIMWM_VIEW_LAYER:
-    if (keyboard != NULL) {
+    if (keyboard != NULL && view->layer->scene->layer_surface->current.keyboard_interactive) {
       wlr_seat_keyboard_notify_enter(
           server->seat, view->layer->scene->layer_surface->surface,
           keyboard->keycodes, keyboard->num_keycodes, &keyboard->modifiers);
