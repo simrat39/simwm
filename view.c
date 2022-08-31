@@ -9,39 +9,28 @@
 struct simwm_view *view_at(double lx, double ly, struct wlr_surface **surface,
                            double *sx, double *sy) {
 
-  int focus_order[] = {LAYER_OVERLAY, LAYER_TOP, LAYER_TILE, LAYER_BOTTOM,
-                       LAYER_BG};
-
-  struct simwm_view *view = NULL;
-
-  for (int layer = 0; layer < sizeof(focus_order) / sizeof(int); layer++) {
-    struct wlr_scene_tree *tree = server->layers[layer];
-
-    struct wlr_scene_node *node =
-        wlr_scene_node_at(&tree->node, lx, ly, sx, sy);
-
-    if (node && node->type == WLR_SCENE_NODE_BUFFER) {
-      struct wlr_scene_tree *parent = node->parent;
-
-      struct wlr_scene_buffer *scene_buffer = wlr_scene_buffer_from_node(node);
-      struct wlr_scene_surface *scene_surface =
-          wlr_scene_surface_from_buffer(scene_buffer);
-      if (!scene_surface) {
-        return NULL;
-      }
-
-      while (parent != NULL && parent->node.data == NULL) {
-        parent = parent->node.parent;
-      }
-
-      if ((view = parent->node.data)) {
-        *surface = scene_surface->surface;
-        break;
-      }
-    }
+  struct wlr_scene_tree *tree = &server->scene->tree;
+  struct wlr_scene_node *node = wlr_scene_node_at(&tree->node, lx, ly, sx, sy);
+  if (!node || node->type != WLR_SCENE_NODE_BUFFER) {
+    return NULL;
   }
 
-  return view;
+  struct wlr_scene_buffer *scene_buffer = wlr_scene_buffer_from_node(node);
+  struct wlr_scene_surface *scene_surface =
+      wlr_scene_surface_from_buffer(scene_buffer);
+  if (!scene_surface) {
+    return NULL;
+  }
+
+  *surface = scene_surface->surface;
+
+  struct wlr_scene_tree *parent = node->parent;
+
+  while (parent && !parent->node.data) {
+    parent = parent->node.parent;
+  }
+
+  return parent->node.data;
 }
 
 void focus_view(struct simwm_view *view, struct wlr_surface *surface) {
@@ -76,7 +65,8 @@ void focus_view(struct simwm_view *view, struct wlr_surface *surface) {
     }
     break;
   case SIMWM_VIEW_LAYER:
-    if (keyboard != NULL && view->layer->scene->layer_surface->current.keyboard_interactive) {
+    if (keyboard != NULL &&
+        view->layer->scene->layer_surface->current.keyboard_interactive) {
       wlr_seat_keyboard_notify_enter(
           server->seat, view->layer->scene->layer_surface->surface,
           keyboard->keycodes, keyboard->num_keycodes, &keyboard->modifiers);
