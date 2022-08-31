@@ -54,7 +54,6 @@ void focus_view(struct simwm_view *view, struct wlr_surface *surface) {
 
   switch (view->type) {
   case SIMWM_VIEW_XDG:
-    wlr_log(WLR_INFO, "HERE LOL XDG");
     wlr_scene_node_raise_to_top(&view->xdg->scene->node);
 
     wlr_xdg_toplevel_set_activated(view->xdg->toplevel, true);
@@ -73,7 +72,6 @@ void focus_view(struct simwm_view *view, struct wlr_surface *surface) {
     }
     break;
   case SIMWM_VIEW_POPUP:
-    wlr_log(WLR_INFO, "HERE LOL POPUP");
 
     wlr_scene_node_raise_to_top(&view->popup->scene->node);
     if (keyboard != NULL) {
