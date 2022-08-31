@@ -42,6 +42,7 @@ struct simwm_server {
   struct wl_listener cursor_motion;
   struct wl_listener cursor_motion_absolute;
   struct wl_listener cursor_button;
+  struct wl_listener cursor_frame;
 
   struct wl_list keyboards;
 

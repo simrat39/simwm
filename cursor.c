@@ -8,6 +8,15 @@
 #include <wayland-util.h>
 #include <wlr/util/log.h>
 
+void on_cursor_frame(struct wl_listener *listener, void *data) {
+  /* This event is forwarded by the cursor when a pointer emits an frame
+   * event. Frame events are sent after regular pointer events to group
+   * multiple events together. For instance, two axis events may happen at the
+   * same time, in which case a frame event won't be sent in between. */
+  /* Notify the client with pointer focus of the frame event. */
+  wlr_seat_pointer_notify_frame(server->seat);
+}
+
 void cursor_init() {
   // A cursor is a wlroots utility to track cursor movement on the screen.
   server->cursor = wlr_cursor_create();
@@ -31,6 +40,9 @@ void cursor_events_init() {
 
   server->cursor_button.notify = on_cursor_button;
   wl_signal_add(&server->cursor->events.button, &server->cursor_button);
+
+  server->cursor_frame.notify = on_cursor_frame;
+  wl_signal_add(&server->cursor->events.frame, &server->cursor_frame);
 }
 
 void process_cursor_move(uint32_t time) {
@@ -65,7 +77,7 @@ void process_cursor_motion(uint32_t time) {
     wlr_seat_pointer_notify_enter(server->seat, surface, sx, sy);
     wlr_seat_pointer_notify_motion(server->seat, time, sx, sy);
   } else {
-    wlr_seat_pointer_clear_focus(server->seat);
+    wlr_seat_pointer_notify_clear_focus(server->seat);
   }
 }
 
