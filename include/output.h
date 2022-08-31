@@ -13,6 +13,9 @@ struct simwm_output {
   struct wl_listener frame;
 
   struct wl_list layer_views[LAYER_COUNT];
+
+  struct wl_list workspaces;
+  struct simwm_workspace* current_workspace;
 };
 
 void server_new_output(struct wl_listener *, void *);

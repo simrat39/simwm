@@ -13,6 +13,7 @@
 #include "view.h"
 #include "wlr-layer-shell-unstable-v1-protocol.h"
 #include "xdg_shell.h"
+#include <seat.h>
 
 void on_map(struct wl_listener *listener, void *data) {
   struct simwm_xdg_surface *xdg = wl_container_of(listener, xdg, map);
@@ -122,7 +123,10 @@ void on_new_xdg_surface(struct wl_listener *listener, void *data) {
   xdg->view = view;
 
   xdg->toplevel = xdg_surface->toplevel;
-  xdg->scene = wlr_scene_xdg_surface_create(server->layers[LAYER_TILE],
+
+  struct simwm_output *output = simwm_output_from_wlr_output(
+      wlr_output_layout_output_at(server->output_layout, 0, 0));
+  xdg->scene = wlr_scene_xdg_surface_create(output->current_workspace->scene,
                                             view->xdg->toplevel->base);
   xdg->scene->node.data = view;
   xdg_surface->data = xdg->scene;

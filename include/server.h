@@ -50,6 +50,7 @@ struct simwm_server {
 
   struct wlr_seat *seat;
   struct wl_listener request_cursor;
+  struct wl_list workspaces;
 };
 
 extern struct simwm_server *server;
