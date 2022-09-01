@@ -2,9 +2,9 @@
 
 #include <server.h>
 
+#include <luaS/luaS.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <luaS.h>
 #include <wlr/util/log.h>
 
 struct simwm_server *server;
@@ -37,7 +37,7 @@ int main() {
     execl("/bin/sh", "/bin/sh", "-c", "alacritty", (void *)NULL);
   }
 
-  luaS_init();
+  luaS_doconfig();
 
   // Run the wayland display event loop.
   wl_display_run(server->wl_display);

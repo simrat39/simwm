@@ -3,11 +3,11 @@
 #include "xdg_shell.h"
 #include <cursor.h>
 #include <includes.h>
+#include <luaS/luaS.h>
 #include <output.h>
 #include <seat.h>
 #include <server.h>
 #include <stdlib.h>
-#include <luaS.h>
 #include <wayland-server-core.h>
 
 void simwm_server_init() {
@@ -99,4 +99,5 @@ void simwm_server_init() {
   wl_signal_add(&server->seat->events.request_set_cursor,
                 &server->request_cursor);
 
+  luaS_init();
 }

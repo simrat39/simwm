@@ -50,14 +50,18 @@ int get_outputs(lua_State *L) {
 
 struct lua_State *luaS_init() {
   struct lua_State *L = luaL_newstate();
+  server->L = L;
 
   luaL_openlibs(L);
-  const char *LUA_FILE = "test.lua";
   lua_pushcfunction(L, get_outputs);
   lua_setglobal(L, "get_outputs");
-  luaL_dofile(L, LUA_FILE);
 
   return L;
 }
 
-void luaS_fini(struct lua_State *L) { lua_close(L); }
+void luaS_doconfig() {
+  const char *LUA_FILE = "test.lua";
+  luaL_dofile(server->L, LUA_FILE);
+}
+
+void luaS_fini() { lua_close(server->L); }
