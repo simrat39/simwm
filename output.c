@@ -49,6 +49,7 @@ void server_new_output(struct wl_listener *listener, void *data) {
 
   wl_list_init(&output->workspaces);
   seat_add_workspace("1", output);
+  seat_add_workspace("2", output);
 
   /* output->destroy.notify = output_destroy; */
   /* wl_signal_add(&wlr_output->events.destroy, &output->destroy); */

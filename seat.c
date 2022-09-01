@@ -6,6 +6,9 @@
 #include <server.h>
 
 #include <stdlib.h>
+#include <string.h>
+#include <wayland-util.h>
+#include <wlr/util/log.h>
 
 void seat_kb_notify_enter(struct wlr_surface *surface) {
   struct wlr_keyboard *keyboard = wlr_seat_get_keyboard(server->seat);
@@ -35,7 +38,39 @@ struct simwm_workspace *seat_add_workspace(char *name,
   return workspace;
 }
 
-struct simwm_workspace*
+struct simwm_workspace *
 seat_get_current_workspace(struct simwm_output *output) {
   return output->current_workspace;
+}
+
+struct simwm_workspace *
+seat_get_workspace_from_name(struct simwm_output *output, char *name) {
+  struct simwm_workspace *ws;
+
+  wl_list_for_each(ws, &output->workspaces, link) {
+    if (strcmp(name, ws->name) == 0) {
+      return ws;
+    }
+  }
+
+  return NULL;
+}
+
+void seat_set_current_workspace(struct simwm_output *output, char *name) {
+  struct simwm_workspace *ws = seat_get_workspace_from_name(output, name);
+  if (!ws) {
+    wlr_log(WLR_INFO, "WS %s not found", name);
+    return;
+  }
+
+  if (strcmp(output->current_workspace->name, name) == 0) {
+    wlr_log(WLR_INFO, "WS %s is already current", name);
+    return;
+  }
+
+  wlr_scene_node_set_enabled(&output->current_workspace->scene->node, false);
+  wlr_scene_node_set_enabled(&ws->scene->node, true);
+  wlr_scene_node_raise_to_top(&ws->scene->node);
+
+  output->current_workspace = ws;
 }

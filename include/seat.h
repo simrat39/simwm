@@ -15,3 +15,5 @@ struct simwm_workspace *seat_add_workspace(char *name,
                                            struct simwm_output *output);
 struct simwm_workspace *
 seat_get_current_workspace(struct simwm_output *output);
+
+void seat_set_current_workspace(struct simwm_output *output, char *name);

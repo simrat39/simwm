@@ -1,5 +1,7 @@
 #include <includes.h>
 #include <keyboard.h>
+#include <output.h>
+#include <seat.h>
 #include <server.h>
 
 #include <stdint.h>
@@ -21,12 +23,23 @@ void on_modifiers(struct wl_listener *listener, void *data) {
 }
 
 bool handle_alt_press(xkb_keysym_t sym) {
+
+  struct simwm_output *output = simwm_output_from_wlr_output(
+      wlr_output_layout_output_at(server->output_layout, 0, 0));
   switch (sym) {
   case XKB_KEY_1:
     wlr_log(WLR_INFO, "Logo + 1");
+    seat_set_current_workspace(output, "1");
     break;
   case XKB_KEY_2:
     wlr_log(WLR_INFO, "Logo + 2");
+    seat_set_current_workspace(output, "2");
+    break;
+  case XKB_KEY_3:
+    wlr_log(WLR_INFO, "Logo + 3");
+    if (fork() == 0) {
+      execl("/bin/sh", "/bin/sh", "-c", "alacritty", (void *)NULL);
+    }
     break;
   default:
     return false;
