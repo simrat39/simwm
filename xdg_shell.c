@@ -126,7 +126,8 @@ void on_new_xdg_surface(struct wl_listener *listener, void *data) {
 
   struct simwm_output *output = simwm_output_from_wlr_output(
       wlr_output_layout_output_at(server->output_layout, 0, 0));
-  xdg->scene = wlr_scene_xdg_surface_create(output->current_workspace->scene,
+  xdg->workspace = output->current_workspace;
+  xdg->scene = wlr_scene_xdg_surface_create(xdg->workspace->scene,
                                             view->xdg->toplevel->base);
   xdg->scene->node.data = view;
   xdg_surface->data = xdg->scene;

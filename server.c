@@ -5,6 +5,7 @@
 #include <includes.h>
 #include <output.h>
 #include <server.h>
+#include <seat.h>
 #include <stdlib.h>
 #include <wayland-server-core.h>
 
@@ -88,6 +89,10 @@ void simwm_server_init() {
   wl_signal_add(&server->backend->events.new_input, &server->new_input);
 
   server->seat = wlr_seat_create(server->wl_display, "seat0");
+
+  wl_list_init(&server->workspaces);
+  seat_add_workspace("1");
+  seat_add_workspace("2");
 
   server->request_cursor.notify = on_seat_request_cursor;
   wl_signal_add(&server->seat->events.request_set_cursor,

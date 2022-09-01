@@ -14,7 +14,6 @@ struct simwm_output {
 
   struct wl_list layer_views[LAYER_COUNT];
 
-  struct wl_list workspaces;
   struct simwm_workspace* current_workspace;
 };
 

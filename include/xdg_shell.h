@@ -1,5 +1,6 @@
 #pragma once
 
+#include "output.h"
 #include <view.h>
 #include <wayland-server-core.h>
 #include <wlr/types/wlr_compositor.h>
@@ -7,6 +8,8 @@
 struct simwm_xdg_surface {
   // the view related to this xdg surface.
   struct simwm_view *view;
+
+  struct simwm_workspace *workspace;
 
   struct wl_listener map;
   struct wl_listener unmap;
