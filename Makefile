@@ -3,7 +3,8 @@ WAYLAND_SCANNER=$(shell pkg-config --variable=wayland_scanner wayland-scanner)
 LIBS=\
 	 $(shell pkg-config --cflags --libs wlroots) \
 	 $(shell pkg-config --cflags --libs wayland-server) \
-	 $(shell pkg-config --cflags --libs xkbcommon)
+	 $(shell pkg-config --cflags --libs xkbcommon) \
+	 $(shell pkg-config --cflags --libs lua)
 
 export C_INCLUDE_PATH=./include
 
@@ -20,7 +21,7 @@ wlr-layer-shell-unstable-v1-protocol.h:
 
 protocols: xdg-shell-protocol.h wlr-layer-shell-unstable-v1-protocol.h
 
-simwm: simwm.c output.c server.c input.c cursor.c keyboard.c xdg_shell.c layer_shell.c view.c popup.c seat.c
+simwm: simwm.c output.c server.c input.c cursor.c keyboard.c xdg_shell.c layer_shell.c view.c popup.c seat.c luaS.c
 	make protocols
 	$(CC) $(CFLAGS) \
 		-g -Werror -I. \

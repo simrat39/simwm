@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <unistd.h>
+#include <luaS.h>
 #include <wlr/util/log.h>
 
 struct simwm_server *server;
@@ -35,6 +36,8 @@ int main() {
   if (fork() == 0) {
     execl("/bin/sh", "/bin/sh", "-c", "alacritty", (void *)NULL);
   }
+
+  luaS_init();
 
   // Run the wayland display event loop.
   wl_display_run(server->wl_display);
