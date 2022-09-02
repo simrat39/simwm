@@ -14,7 +14,7 @@ struct simwm_keyboard {
 
 struct simwm_keymap {
   struct wl_list link;
-  int key;
+  xkb_keysym_t key;
   int on_press;
   int on_release;
   int modifiers;

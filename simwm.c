@@ -35,10 +35,6 @@ int main() {
    * startup command if requested. */
   setenv("WAYLAND_DISPLAY", socket, true);
 
-  if (fork() == 0) {
-    execl("/bin/sh", "/bin/sh", "-c", "alacritty", (void *)NULL);
-  }
-
   // Run the wayland display event loop.
   wl_display_run(server->wl_display);
 

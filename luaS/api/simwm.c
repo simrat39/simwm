@@ -9,8 +9,10 @@
 #include <server.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <wayland-util.h>
 #include <wlr/util/log.h>
+#include <xkbcommon/xkbcommon.h>
 
 int get_outputs(lua_State *L) {
   lua_newtable(L);
@@ -85,11 +87,12 @@ int add_keymap(lua_State *L) {
     modifiers |= wlr_modifier;
   }
 
-  if (!lua_isnumber(L, 2)) {
-    wlr_log(WLR_ERROR, "Key name needs to be a number");
+  if (!lua_isstring(L, 2)) {
+    wlr_log(WLR_ERROR, "Key name needs to be a string");
     return 0;
   }
-  int keyname = lua_tonumber(L, 2);
+  const char *keyname = lua_tostring(L, 2);
+  xkb_keysym_t keysym = xkb_keysym_from_name(keyname, XKB_KEYSYM_NO_FLAGS);
 
   if (!lua_isfunction(L, 3)) {
     wlr_log(WLR_ERROR, "Where callback?");
@@ -100,7 +103,7 @@ int add_keymap(lua_State *L) {
 
   struct simwm_keymap *km = calloc(1, sizeof(struct simwm_keymap));
   km->on_press = luaL_ref(L, LUA_REGISTRYINDEX);
-  km->key = keyname;
+  km->key = keysym;
   km->modifiers = modifiers;
 
   dumpstack(L);
@@ -116,6 +119,21 @@ int add_keymap(lua_State *L) {
   return 0;
 }
 
+int spawn(lua_State *L) {
+  if (!lua_isstring(L, 1)) {
+    wlr_log(WLR_ERROR, "Command is not a string");
+    return 0;
+  }
+
+  const char *command = lua_tostring(L, 1);
+
+  if (fork() == 0) {
+    execl("/bin/sh", "/bin/sh", "-c", command, (void *)NULL);
+  }
+
+  return 0;
+}
+
 // Creates the global simwm table to interfacw with the api
 void luaS_simwm_init() {
   lua_pushcfunction(server->L, get_outputs);
@@ -126,4 +144,7 @@ void luaS_simwm_init() {
 
   lua_pushcfunction(server->L, add_keymap);
   lua_setglobal(server->L, "add_keymap");
+
+  lua_pushcfunction(server->L, spawn);
+  lua_setglobal(server->L, "spawn");
 }
