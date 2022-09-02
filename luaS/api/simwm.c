@@ -99,9 +99,17 @@ int add_keymap(lua_State *L) {
   lua_pushvalue(L, 3);
 
   struct simwm_keymap *km = calloc(1, sizeof(struct simwm_keymap));
-  km->callback = luaL_ref(L, LUA_REGISTRYINDEX);
+  km->on_press = luaL_ref(L, LUA_REGISTRYINDEX);
   km->key = keyname;
   km->modifiers = modifiers;
+
+  dumpstack(L);
+
+  if (lua_isfunction(L, 4)) {
+    // Push callback to top of stack cause luaL_ref takes the top one
+    lua_pushvalue(L, 4);
+    km->on_release = luaL_ref(L, LUA_REGISTRYINDEX);
+  }
 
   wl_list_insert(&server->keymaps, &km->link);
 

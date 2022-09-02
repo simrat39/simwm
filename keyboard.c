@@ -25,32 +25,6 @@ void on_modifiers(struct wl_listener *listener, void *data) {
                                      &keyboard->wlr_keyboard->modifiers);
 }
 
-bool handle_alt_press(xkb_keysym_t sym) {
-
-  struct simwm_output *output = simwm_output_from_wlr_output(
-      wlr_output_layout_output_at(server->output_layout, 0, 0));
-
-  switch (sym) {
-  case XKB_KEY_1:
-    wlr_log(WLR_INFO, "Logo + 1");
-    seat_set_current_workspace(output, "1");
-    break;
-  case XKB_KEY_2:
-    wlr_log(WLR_INFO, "Logo + 2");
-    seat_set_current_workspace(output, "2");
-    break;
-  case XKB_KEY_3:
-    wlr_log(WLR_INFO, "Logo + 3");
-    if (fork() == 0) {
-      execl("/bin/sh", "/bin/sh", "-c", "alacritty", (void *)NULL);
-    }
-    break;
-  default:
-    return false;
-  }
-  return true;
-}
-
 void on_key(struct wl_listener *listener, void *data) {
   struct simwm_keyboard *keyboard = wl_container_of(listener, keyboard, key);
   struct wlr_keyboard_key_event *event = data;
@@ -68,10 +42,14 @@ void on_key(struct wl_listener *listener, void *data) {
     if (modifiers & km->modifiers) {
       for (int i = 0; i < nsyms; i++) {
         if (km->key == syms[i]) {
-          wlr_log(WLR_INFO, "uhh here?");
+          if (event->state == WL_KEYBOARD_KEY_STATE_PRESSED) {
+            lua_rawgeti(server->L, LUA_REGISTRYINDEX, km->on_press);
+            lua_pcall(server->L, 0, 0, 0);
+          } else {
+            lua_rawgeti(server->L, LUA_REGISTRYINDEX, km->on_release);
+            lua_pcall(server->L, 0, 0, 0);
+          }
 
-          lua_rawgeti(server->L, LUA_REGISTRYINDEX, km->callback);
-          lua_pcall(server->L, 0, 0, 0);
           handled = true;
         }
       }

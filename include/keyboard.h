@@ -15,7 +15,8 @@ struct simwm_keyboard {
 struct simwm_keymap {
   struct wl_list link;
   int key;
-  int callback;
+  int on_press;
+  int on_release;
   int modifiers;
 };
 
