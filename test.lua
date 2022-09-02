@@ -16,12 +16,12 @@ end
 
 outputs[1]:set_workspace("1")
 
-add_keymap(49, function ()
-  print("BRO")
+add_keymap({"Alt"}, 49, function ()
+  print("bruh")
   outputs[1]:set_workspace("1")
 end)
 
-add_keymap(50, function ()
-  print("itWORKS?")
+add_keymap({"Alt"}, 50, function ()
+  print("bruh2")
   outputs[1]:set_workspace("2")
 end)

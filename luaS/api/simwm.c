@@ -44,27 +44,68 @@ int add_workspace(lua_State *L) {
   return 0;
 }
 
+enum wlr_keyboard_modifier modifier_from_string(const char *str) {
+  if (strcmp(str, "Shift") == 0) {
+    return WLR_MODIFIER_SHIFT;
+  }
+
+  if (strcmp(str, "Logo") == 0) {
+    return WLR_MODIFIER_LOGO;
+  }
+
+  if (strcmp(str, "Alt") == 0) {
+    return WLR_MODIFIER_ALT;
+  }
+
+  return 0;
+}
+
 int add_keymap(lua_State *L) {
   wlr_log(WLR_INFO, "ADDING ALT KEYMAP");
 
-  if (!lua_isnumber(L, -2)) {
+  if (!lua_istable(L, 1)) {
+    wlr_log(WLR_ERROR, "Modifiers need to be a table");
+    return 0;
+  }
+
+  int modifiers = 0;
+
+  lua_len(L, 1);
+  int modifier_count = lua_tonumber(L, -1);
+
+  dumpstack(L);
+
+  for (int i = 1; i <= modifier_count; i++) {
+    lua_rawgeti(L, 1, i);
+    const char *modifier_string = lua_tostring(L, -1);
+    wlr_log(WLR_INFO, "%s", modifier_string);
+
+    int wlr_modifier = modifier_from_string(modifier_string);
+    wlr_log(WLR_INFO, "%i", wlr_modifier);
+    modifiers |= wlr_modifier;
+  }
+
+  if (!lua_isnumber(L, 2)) {
     wlr_log(WLR_ERROR, "Key name needs to be a number");
     return 0;
   }
-  int keyname = lua_tonumber(L, -2);
+  int keyname = lua_tonumber(L, 2);
 
-  if (!lua_isfunction(L, -1)) {
+  if (!lua_isfunction(L, 3)) {
     wlr_log(WLR_ERROR, "Where callback?");
     return 0;
   }
+  // Push callback to top of stack cause luaL_ref takes the top one
+  lua_pushvalue(L, 3);
 
   struct simwm_keymap *km = calloc(1, sizeof(struct simwm_keymap));
   km->callback = luaL_ref(L, LUA_REGISTRYINDEX);
   km->key = keyname;
+  km->modifiers = modifiers;
 
   wl_list_insert(&server->keymaps, &km->link);
 
-  return 1;
+  return 0;
 }
 
 // Creates the global simwm table to interfacw with the api

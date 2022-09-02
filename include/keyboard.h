@@ -16,6 +16,7 @@ struct simwm_keymap {
   struct wl_list link;
   int key;
   int callback;
+  int modifiers;
 };
 
 void server_new_keyboard(struct wlr_input_device *);
