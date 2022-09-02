@@ -1,9 +1,6 @@
-local inspect  = require("inspect")
 local simwm = require("simwm")
 
 local outputs = simwm.get_outputs()
-
-print(inspect(outputs))
 
 spawn("swaybg -o \\* -i ~/Media/macos-monterey-2560x1440_897687-mm-90.jpg -m fill")
 
