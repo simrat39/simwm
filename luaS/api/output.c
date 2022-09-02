@@ -1,7 +1,11 @@
 #include <includes.h>
+#include <lauxlib.h>
 #include <lua.h>
 #include <output.h>
+#include <seat.h>
 #include <server.h>
+#include <stdio.h>
+#include <wlr/util/log.h>
 
 int get_coords(lua_State *L) {
   lua_getfield(L, -1, "userdata");
@@ -22,6 +26,26 @@ int get_coords(lua_State *L) {
   return 1;
 }
 
+int set_workspace(lua_State *L) {
+  if (!lua_isstring(L, -1)) {
+    wlr_log(WLR_ERROR, "Workspace name needs to be a string");
+    return 0;
+  }
+
+  const char *ws_name = lua_tostring(L, -1);
+
+  lua_getfield(L, -2, "userdata");
+  if (!lua_islightuserdata(L, -1)) {
+    wlr_log(WLR_ERROR, "Output has invalid userdata");
+    return 0;
+  }
+
+  struct simwm_output *output = lua_touserdata(L, -1);
+  seat_set_current_workspace(output, (char *)ws_name);
+
+  return 0;
+}
+
 // Sets up a simwm_output table in lua and puts it on top of the stack.
 void luaS_output_from_simwm_output(lua_State *L, struct simwm_output *output) {
   lua_newtable(L);
@@ -40,5 +64,9 @@ void luaS_output_from_simwm_output(lua_State *L, struct simwm_output *output) {
 
   lua_pushstring(L, "get_coords");
   lua_pushcfunction(L, get_coords);
+  lua_settable(L, -3);
+
+  lua_pushstring(L, "set_workspace");
+  lua_pushcfunction(L, set_workspace);
   lua_settable(L, -3);
 }

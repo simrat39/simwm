@@ -29,6 +29,8 @@ int main() {
     wl_display_destroy(server->wl_display);
   }
 
+  luaS_doconfig();
+
   /* Set the WAYLAND_DISPLAY environment variable to our socket and run the
    * startup command if requested. */
   setenv("WAYLAND_DISPLAY", socket, true);
@@ -36,8 +38,6 @@ int main() {
   if (fork() == 0) {
     execl("/bin/sh", "/bin/sh", "-c", "alacritty", (void *)NULL);
   }
-
-  luaS_doconfig();
 
   // Run the wayland display event loop.
   wl_display_run(server->wl_display);
