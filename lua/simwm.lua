@@ -22,4 +22,10 @@ function M.map(modifiers, key, on_press, on_release)
   add_keymap(modifiers, key, on_press, on_release)
 end
 
+---Creates a new workspace.
+---@param name string|number
+function M.add_workspace(name)
+  add_workspace(name)
+end
+
 return M
