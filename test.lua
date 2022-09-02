@@ -1,8 +1,8 @@
-local simwm = require("simwm")
+local sim = require("simwm")
 
-local outputs = simwm.get_outputs()
+local outputs = sim.get_outputs()
 
-spawn("swaybg -o \\* -i ~/Media/macos-monterey-2560x1440_897687-mm-90.jpg -m fill")
+sim.spawn("swaybg -o \\* -i ~/Media/macos-monterey-2560x1440_897687-mm-90.jpg -m fill")
 
 for i = 1, 10, 1 do
   add_workspace(i)
@@ -13,7 +13,7 @@ for i = 1, 10, 1 do
 end
 
 add_keymap({"Alt"}, "Return", function ()
-  spawn("alacritty")
+  sim.spawn("alacritty")
 end)
 
 outputs[1]:set_workspace("1")
