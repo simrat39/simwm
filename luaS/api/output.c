@@ -30,6 +30,10 @@ void luaS_output_from_simwm_output(lua_State *L, struct simwm_output *output) {
   lua_pushstring(L, output->wlr_output->name);
   lua_settable(L, -3);
 
+  lua_pushstring(L, "description");
+  lua_pushstring(L, output->wlr_output->description);
+  lua_settable(L, -3);
+
   lua_pushstring(L, "userdata");
   lua_pushlightuserdata(L, output);
   lua_settable(L, -3);
