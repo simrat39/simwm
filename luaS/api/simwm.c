@@ -75,8 +75,6 @@ int add_keymap(lua_State *L) {
   lua_len(L, 1);
   int modifier_count = lua_tonumber(L, -1);
 
-  dumpstack(L);
-
   for (int i = 1; i <= modifier_count; i++) {
     lua_rawgeti(L, 1, i);
     const char *modifier_string = lua_tostring(L, -1);
@@ -105,8 +103,6 @@ int add_keymap(lua_State *L) {
   km->on_press = luaL_ref(L, LUA_REGISTRYINDEX);
   km->key = keysym;
   km->modifiers = modifiers;
-
-  dumpstack(L);
 
   if (lua_isfunction(L, 4)) {
     // Push callback to top of stack cause luaL_ref takes the top one
