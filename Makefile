@@ -21,7 +21,7 @@ wlr-layer-shell-unstable-v1-protocol.h:
 
 protocols: xdg-shell-protocol.h wlr-layer-shell-unstable-v1-protocol.h
 
-simwm: simwm.c output.c server.c input.c cursor.c keyboard.c xdg_shell.c layer_shell.c view.c popup.c seat.c luaS/luaS.c
+simwm: simwm.c output.c server.c input.c cursor.c keyboard.c xdg_shell.c layer_shell.c view.c popup.c seat.c luaS/luaS.c luaS/api/simwm.c luaS/api/output.c
 	make protocols
 	$(CC) $(CFLAGS) \
 		-g -Werror -I. \
