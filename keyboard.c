@@ -1,5 +1,7 @@
+#include "luaS/utils/dump.h"
 #include <includes.h>
 #include <keyboard.h>
+#include <lua.h>
 #include <output.h>
 #include <seat.h>
 #include <server.h>
@@ -9,6 +11,7 @@
 
 #include <unistd.h>
 #include <wayland-server-protocol.h>
+#include <wayland-util.h>
 #include <wlr/util/log.h>
 #include <xkbcommon/xkbcommon-keysyms.h>
 #include <xkbcommon/xkbcommon.h>
@@ -26,6 +29,19 @@ bool handle_alt_press(xkb_keysym_t sym) {
 
   struct simwm_output *output = simwm_output_from_wlr_output(
       wlr_output_layout_output_at(server->output_layout, 0, 0));
+
+  struct simwm_keymap *km;
+
+  wl_list_for_each(km, &server->keymaps, link) {
+    if (km->key == sym) {
+      wlr_log(WLR_INFO, "uhh here?");
+
+      lua_rawgeti(server->L, LUA_REGISTRYINDEX, km->callback);
+      lua_pcall(server->L, 0, 0, 0);
+      return true;
+    }
+  }
+
   switch (sym) {
   case XKB_KEY_1:
     wlr_log(WLR_INFO, "Logo + 1");

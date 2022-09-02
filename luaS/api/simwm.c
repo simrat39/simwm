@@ -1,10 +1,15 @@
+#include "keyboard.h"
 #include <includes.h>
+#include <lauxlib.h>
 #include <lua.h>
 #include <luaS/api/output.h>
+#include <luaS/utils/dump.h>
 #include <output.h>
 #include <seat.h>
 #include <server.h>
+#include <stdlib.h>
 #include <string.h>
+#include <wayland-util.h>
 #include <wlr/util/log.h>
 
 int get_outputs(lua_State *L) {
@@ -39,6 +44,29 @@ int add_workspace(lua_State *L) {
   return 0;
 }
 
+int add_keymap(lua_State *L) {
+  wlr_log(WLR_INFO, "ADDING ALT KEYMAP");
+
+  if (!lua_isnumber(L, -2)) {
+    wlr_log(WLR_ERROR, "Key name needs to be a number");
+    return 0;
+  }
+  int keyname = lua_tonumber(L, -2);
+
+  if (!lua_isfunction(L, -1)) {
+    wlr_log(WLR_ERROR, "Where callback?");
+    return 0;
+  }
+
+  struct simwm_keymap *km = calloc(1, sizeof(struct simwm_keymap));
+  km->callback = luaL_ref(L, LUA_REGISTRYINDEX);
+  km->key = keyname;
+
+  wl_list_insert(&server->keymaps, &km->link);
+
+  return 1;
+}
+
 // Creates the global simwm table to interfacw with the api
 void luaS_simwm_init() {
   lua_pushcfunction(server->L, get_outputs);
@@ -46,4 +74,7 @@ void luaS_simwm_init() {
 
   lua_pushcfunction(server->L, add_workspace);
   lua_setglobal(server->L, "add_workspace");
+
+  lua_pushcfunction(server->L, add_keymap);
+  lua_setglobal(server->L, "add_keymap");
 }

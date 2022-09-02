@@ -86,6 +86,8 @@ void simwm_server_init() {
   cursor_events_init();
 
   wl_list_init(&server->keyboards);
+  wl_list_init(&server->keymaps);
+
   server->new_input.notify = on_new_input;
   wl_signal_add(&server->backend->events.new_input, &server->new_input);
 

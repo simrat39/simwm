@@ -16,3 +16,12 @@ end
 
 outputs[1]:set_workspace("1")
 
+add_keymap(49, function ()
+  print("BRO")
+  outputs[1]:set_workspace("1")
+end)
+
+add_keymap(50, function ()
+  print("itWORKS?")
+  outputs[1]:set_workspace("2")
+end)
