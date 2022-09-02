@@ -1,25 +1,25 @@
 #include <includes.h>
 #include <lua.h>
+#include <luaS/api/output.h>
 #include <output.h>
 #include <server.h>
-#include <luaS/api/output.h>
+#include <wayland-util.h>
 
 int get_outputs(lua_State *L) {
-  struct simwm_output *o =
-      wlr_output_layout_output_at(server->output_layout, 0, 0)->data;
   lua_newtable(L);
 
-  lua_pushstring(L, "name");
-  lua_pushstring(L, o->wlr_output->name);
-  lua_settable(L, -3);
+  struct simwm_output *output;
+  int idx = 1;
 
-  lua_pushstring(L, "userdata");
-  lua_pushlightuserdata(L, o);
-  lua_settable(L, -3);
+  wl_list_for_each(output, &server->outputs, link) {
+    // Make output object and put it on top of the stack
+    luaS_output_from_simwm_output(L, output);
 
-  lua_pushstring(L, "get_coords");
-  lua_pushcfunction(L, get_coords);
-  lua_settable(L, -3);
+    // Table is now at -2 in the stack, pop the current element and add it to
+    // the table.
+    lua_rawseti(L, -2, idx);
+    idx++;
+  }
 
   return 1;
 }
