@@ -13,4 +13,13 @@ function M.spawn(command)
   return spawn(command)
 end
 
+---Set a keybinding.
+---@param modifiers table
+---@param key string|number
+---@param on_press function
+---@param on_release? function
+function M.map(modifiers, key, on_press, on_release)
+  add_keymap(modifiers, key, on_press, on_release)
+end
+
 return M

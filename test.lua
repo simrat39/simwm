@@ -7,12 +7,12 @@ sim.spawn("swaybg -o \\* -i ~/Media/macos-monterey-2560x1440_897687-mm-90.jpg -m
 for i = 1, 10, 1 do
   add_workspace(i)
 
-  add_keymap({"Alt"}, i, function ()
+  sim.map({"Alt"}, i, function ()
     outputs[1]:set_workspace(i)
   end)
 end
 
-add_keymap({"Alt"}, "Return", function ()
+sim.map({"Alt"}, "Return", function ()
   sim.spawn("alacritty")
 end)
 
