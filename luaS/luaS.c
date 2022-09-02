@@ -41,7 +41,10 @@ struct lua_State *luaS_init() {
 
 void luaS_doconfig() {
   const char *LUA_FILE = "test.lua";
-  luaL_dofile(server->L, LUA_FILE);
+  if (luaL_dofile(server->L, LUA_FILE)) {
+    const char *err = lua_tostring(server->L, -1);
+    wlr_log(WLR_ERROR, "%s", err);
+  };
 }
 
 void luaS_fini() { lua_close(server->L); }
