@@ -72,8 +72,7 @@ int add_keymap(lua_State *L) {
 
   int modifiers = 0;
 
-  lua_len(L, 1);
-  int modifier_count = lua_tonumber(L, -1);
+  int modifier_count = lua_objlen(L, 1);
 
   for (int i = 1; i <= modifier_count; i++) {
     lua_rawgeti(L, 1, i);

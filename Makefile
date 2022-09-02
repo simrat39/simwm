@@ -4,7 +4,7 @@ LIBS=\
 	 $(shell pkg-config --cflags --libs wlroots) \
 	 $(shell pkg-config --cflags --libs wayland-server) \
 	 $(shell pkg-config --cflags --libs xkbcommon) \
-	 $(shell pkg-config --cflags --libs lua)
+	 $(shell pkg-config --cflags --libs luajit)
 
 export C_INCLUDE_PATH=./include
 
