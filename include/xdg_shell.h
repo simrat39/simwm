@@ -3,9 +3,12 @@
 #include "output.h"
 #include <view.h>
 #include <wayland-server-core.h>
+#include <wayland-util.h>
 #include <wlr/types/wlr_compositor.h>
 
 struct simwm_xdg_surface {
+  struct wl_list ws_link;
+
   // the view related to this xdg surface.
   struct simwm_view *view;
 

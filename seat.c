@@ -27,6 +27,7 @@ struct simwm_workspace *seat_add_workspace(char *name) {
 
   workspace->name = name;
   workspace->scene = wlr_scene_tree_create(server->layers[LAYER_TILE]);
+  wl_list_init(&workspace->views);
 
   wl_list_insert(&server->workspaces, &workspace->link);
 

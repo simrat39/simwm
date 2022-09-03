@@ -39,6 +39,7 @@ void on_destroy(struct wl_listener *listener, void *data) {
   wl_list_remove(&xdg->map.link);
   wl_list_remove(&xdg->unmap.link);
   wl_list_remove(&xdg->destroy.link);
+  wl_list_remove(&xdg->ws_link);
 
   free(xdg->view);
   free(xdg);
@@ -127,6 +128,8 @@ void on_new_xdg_surface(struct wl_listener *listener, void *data) {
   struct simwm_output *output = simwm_output_from_wlr_output(
       wlr_output_layout_output_at(server->output_layout, 0, 0));
   xdg->workspace = output->current_workspace;
+  wl_list_insert(&xdg->workspace->views, &xdg->ws_link);
+
   xdg->scene = wlr_scene_xdg_surface_create(xdg->workspace->scene,
                                             view->xdg->toplevel->base);
   xdg->scene->node.data = view;
