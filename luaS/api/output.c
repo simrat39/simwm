@@ -7,6 +7,24 @@
 #include <stdio.h>
 #include <wlr/util/log.h>
 
+int get_resolution(lua_State *L) {
+  lua_getfield(L, -1, "userdata");
+  struct simwm_output *o = lua_touserdata(L, -1);
+
+  int width, height;
+  wlr_output_effective_resolution(o->wlr_output, &width, &height);
+
+  lua_newtable(L);
+
+  lua_pushnumber(L, (float)width);
+  lua_setfield(L, -2, "width");
+
+  lua_pushnumber(L, (float)height);
+  lua_setfield(L, -2, "height");
+
+  return 1;
+}
+
 int get_coords(lua_State *L) {
   lua_getfield(L, -1, "userdata");
   struct simwm_output *o = lua_touserdata(L, -1);
@@ -64,6 +82,10 @@ void luaS_output_from_simwm_output(lua_State *L, struct simwm_output *output) {
 
   lua_pushstring(L, "get_coords");
   lua_pushcfunction(L, get_coords);
+  lua_settable(L, -3);
+
+  lua_pushstring(L, "get_resolution");
+  lua_pushcfunction(L, get_resolution);
   lua_settable(L, -3);
 
   lua_pushstring(L, "set_workspace");
