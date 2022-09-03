@@ -1,6 +1,7 @@
 #pragma once
 
 #include "layer_shell.h"
+#include "layout.h"
 #include <lua.h>
 #include <wayland-server-core.h>
 #include <wayland-util.h>
@@ -53,6 +54,9 @@ struct simwm_server {
   struct wlr_seat *seat;
   struct wl_listener request_cursor;
   struct wl_list workspaces;
+
+  struct wl_list layouts;
+  struct simwm_layout* current_layout;
 
   struct lua_State *L;
 };

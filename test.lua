@@ -1,4 +1,5 @@
 local sim = require("simwm")
+local inspect = require("inspect")
 
 local outputs = sim.get_outputs()
 
@@ -17,3 +18,11 @@ sim.map({"Alt"}, "Return", function ()
 end)
 
 outputs[1]:set_workspace("1")
+
+sim.register_layout_manager({
+  name="DWL",
+  arrange = function (o, w)
+   print("Arrange was called")
+   print(inspect(o))
+  end
+})

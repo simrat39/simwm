@@ -62,6 +62,8 @@ void seat_set_current_workspace(struct simwm_output *output, char *name) {
     return;
   }
 
+  ws->output = output;
+
   struct simwm_workspace *last_ws = output->current_workspace;
 
   if (last_ws) {

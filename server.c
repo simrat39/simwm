@@ -9,6 +9,7 @@
 #include <server.h>
 #include <stdlib.h>
 #include <wayland-server-core.h>
+#include <wayland-util.h>
 
 void simwm_server_init() {
   server = calloc(1, sizeof(struct simwm_server));
@@ -75,6 +76,8 @@ void simwm_server_init() {
   server->new_layer_surface.notify = on_new_layer_surface;
   wl_signal_add(&server->layer_shell->events.new_surface,
                 &server->new_layer_surface);
+
+  wl_list_init(&server->layouts);
 
   server->layers[LAYER_BG] = wlr_scene_tree_create(&server->scene->tree);
   server->layers[LAYER_BOTTOM] = wlr_scene_tree_create(&server->scene->tree);

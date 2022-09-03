@@ -28,4 +28,10 @@ function M.add_workspace(name)
   add_workspace(name)
 end
 
+---Registers a layout manager.
+---@param manager Layout
+function M.register_layout_manager(manager)
+  register_layout_manager(manager)
+end
+
 return M

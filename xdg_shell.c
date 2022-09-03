@@ -8,6 +8,7 @@
 #include <wlr/util/log.h>
 
 #include "layer_shell.h"
+#include "layout.h"
 #include "output.h"
 #include "server.h"
 #include "view.h"
@@ -25,6 +26,8 @@ void on_map(struct wl_listener *listener, void *data) {
   wlr_seat_keyboard_notify_enter(server->seat, xdg->toplevel->base->surface,
                                  keyboard->keycodes, keyboard->num_keycodes,
                                  &keyboard->modifiers);
+
+  layout_arrange(xdg->workspace);
 }
 
 void on_unmap(struct wl_listener *listener, void *data) {

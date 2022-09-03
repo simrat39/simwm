@@ -1,4 +1,5 @@
 #include "keyboard.h"
+#include "layout.h"
 #include <includes.h>
 #include <lauxlib.h>
 #include <lua.h>
@@ -114,6 +115,25 @@ int add_keymap(lua_State *L) {
   return 0;
 }
 
+int register_layout_manager(lua_State *L) {
+  dumpstack(L);
+  struct simwm_layout *layout = calloc(1, sizeof(struct simwm_layout));
+
+  lua_getfield(L, 1, "name");
+  const char *name = lua_tostring(L, -1);
+  layout->name = strdup(name);
+
+  lua_getfield(L, 1, "arrange");
+  layout->arrange = luaL_ref(L, LUA_REGISTRYINDEX);
+
+  wl_list_insert(&server->layouts, &layout->link);
+
+  if (!server->current_layout) {
+    server->current_layout = layout;
+  }
+  return 0;
+}
+
 int spawn(lua_State *L) {
   if (!lua_isstring(L, 1)) {
     wlr_log(WLR_ERROR, "Command is not a string");
@@ -142,4 +162,7 @@ void luaS_simwm_init() {
 
   lua_pushcfunction(server->L, spawn);
   lua_setglobal(server->L, "spawn");
+
+  lua_pushcfunction(server->L, register_layout_manager);
+  lua_setglobal(server->L, "register_layout_manager");
 }
