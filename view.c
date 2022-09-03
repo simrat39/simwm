@@ -56,6 +56,7 @@ void focus_view(struct simwm_view *view, struct wlr_surface *surface) {
 
     wlr_xdg_toplevel_set_activated(view->xdg->toplevel, true);
     seat_kb_notify_enter(view->xdg->toplevel->base->surface);
+    view->xdg->workspace->last_focused_view = view;
     break;
 
   case SIMWM_VIEW_LAYER:

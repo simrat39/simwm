@@ -40,7 +40,7 @@ struct lua_State *luaS_init() {
 }
 
 void luaS_doconfig() {
-  const char *LUA_FILE = "test.lua";
+  const char *LUA_FILE = "/home/simrat39/dev/simwm/test.lua";
   if (luaL_dofile(server->L, LUA_FILE)) {
     const char *err = lua_tostring(server->L, -1);
     wlr_log(WLR_ERROR, "%s", err);

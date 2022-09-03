@@ -19,7 +19,7 @@ void on_map(struct wl_listener *listener, void *data) {
   struct simwm_xdg_surface *xdg = wl_container_of(listener, xdg, map);
   wlr_log(WLR_INFO, "Mapped window: %s", xdg->toplevel->title);
 
-  wlr_xdg_toplevel_set_activated(xdg->toplevel, true);
+  focus_view(xdg->view, xdg->toplevel->base->surface);
 
   struct wlr_keyboard *keyboard = wlr_seat_get_keyboard(server->seat);
   wlr_seat_keyboard_notify_enter(server->seat, xdg->toplevel->base->surface,

@@ -1,3 +1,4 @@
+#include "view.h"
 #include <includes.h>
 
 #include <layer_shell.h>
@@ -21,9 +22,12 @@ void seat_kb_notify_enter(struct wlr_surface *surface) {
                                  keyboard->num_keycodes, &keyboard->modifiers);
 }
 
+void seat_kb_notify_clear_focus() {
+  wlr_seat_keyboard_notify_clear_focus(server->seat);
+}
+
 struct simwm_workspace *seat_add_workspace(char *name) {
-  struct simwm_workspace *workspace =
-      calloc(1, sizeof(struct simwm_workspace *));
+  struct simwm_workspace *workspace = calloc(1, sizeof(struct simwm_workspace));
 
   workspace->name = name;
   workspace->scene = wlr_scene_tree_create(server->layers[LAYER_TILE]);
@@ -58,17 +62,34 @@ void seat_set_current_workspace(struct simwm_output *output, char *name) {
     return;
   }
 
-  if (output->current_workspace) {
+  struct simwm_workspace *last_ws = output->current_workspace;
+
+  if (last_ws) {
     if (strcmp(output->current_workspace->name, name) == 0) {
       wlr_log(WLR_INFO, "WS %s is already current", name);
       return;
     }
 
-    wlr_scene_node_set_enabled(&output->current_workspace->scene->node, false);
+    wlr_log(WLR_INFO, "View focused before switching %p",
+            last_ws->last_focused_view);
+
+    /* // disable last focused client on old workspace */
+    if (last_ws->last_focused_view) {
+      seat_kb_notify_clear_focus();
+      wlr_xdg_toplevel_set_activated(last_ws->last_focused_view->xdg->toplevel,
+                                     false);
+    }
+
+    wlr_scene_node_set_enabled(&last_ws->scene->node, false);
   }
 
   wlr_scene_node_set_enabled(&ws->scene->node, true);
   wlr_scene_node_raise_to_top(&ws->scene->node);
+
+  // enable last focused client on new workspace
+  if (ws->last_focused_view) {
+    focus_view(ws->last_focused_view, ws->last_focused_view->xdg->toplevel->base->surface);
+  }
 
   output->current_workspace = ws;
 }
