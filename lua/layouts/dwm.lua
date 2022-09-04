@@ -1,5 +1,3 @@
-local inspect = require("inspect")
-
 ---@class DwmLayout : Layout
 local M = {
   name = "Dwm",
@@ -10,14 +8,14 @@ local M = {
 
 ---Get the stack for a workspace
 ---@param ws any
----@return any[]
+---@return Window[]
 local function get_stack(ws)
  return M.stack[ws.name]
 end
 
 ---Sets the stack for a workspace.
 ---@param ws Workspace
----@param new any[]
+---@param new Window[]
 local function set_stack(ws, new)
  M.stack[ws.name] = new;
 end
@@ -74,19 +72,19 @@ end
 ---Called when a new view is opened
 ---@param o Output
 ---@param ws Workspace
----@param view any
-function M.on_new_view(o, ws, view)
+---@param win Window
+function M.on_new_view(o, ws, win)
   if not get_stack(ws) then
     set_stack(ws, {})
   end
 
   if get_master(ws) == nil then
-    set_master(ws, view);
+    set_master(ws, win);
     set_master_fullscreen(o, ws);
     return;
   end
 
-  table.insert(get_stack(ws), view)
+  table.insert(get_stack(ws), win)
   set_stack_pos_size(o, ws);
 
   if #get_stack(ws) >= 1 then
@@ -97,10 +95,10 @@ end
 ---Called when a new view is opened
 ---@param o Output
 ---@param ws Workspace
----@param window any
-function M.on_view_close(o, ws, window)
+---@param win Window
+function M.on_view_close(o, ws, win)
   -- master was removed
-  if window.userdata == get_master(ws).userdata then
+  if win.userdata == get_master(ws).userdata then
     -- check if we have any views in the stack
     if #get_stack(ws) >= 1 then
       -- Set a new master if we do
@@ -123,7 +121,7 @@ function M.on_view_close(o, ws, window)
   -- view from stack was removed
   else
     for i, v in ipairs(get_stack(ws)) do
-      if v.userdata == window.userdata then
+      if v.userdata == win.userdata then
         table.remove(get_stack(ws), i);
       end
     end
@@ -138,8 +136,8 @@ function M.on_view_close(o, ws, window)
 end
 
 ---Logic to arrange views in a workspae.
----@param output Output Output on which the workspace resides
----@param workspace Workspace Workspace to arrange the views in
-function M.arrange(output, workspace) end
+---@param o Output Output on which the workspace resides
+---@param ws Workspace Workspace to arrange the views in
+function M.arrange(o, ws) end
 
 return M
