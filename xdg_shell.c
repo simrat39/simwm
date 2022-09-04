@@ -39,6 +39,9 @@ void on_destroy(struct wl_listener *listener, void *data) {
   struct simwm_xdg_surface *xdg = wl_container_of(listener, xdg, destroy);
   wlr_log(WLR_INFO, "Destroyed window: %s", xdg->toplevel->title);
 
+  wl_list_remove(&xdg->ws_link);
+  on_view_close(xdg->workspace, xdg->view);
+
   // FIXME: Why?
   if (xdg->workspace->last_focused_view == xdg->view) {
     xdg->workspace->last_focused_view = NULL;
@@ -47,7 +50,6 @@ void on_destroy(struct wl_listener *listener, void *data) {
   wl_list_remove(&xdg->map.link);
   wl_list_remove(&xdg->unmap.link);
   wl_list_remove(&xdg->destroy.link);
-  wl_list_remove(&xdg->ws_link);
 
   free(xdg->view);
   free(xdg);
