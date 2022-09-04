@@ -27,7 +27,7 @@ void on_map(struct wl_listener *listener, void *data) {
                                  keyboard->keycodes, keyboard->num_keycodes,
                                  &keyboard->modifiers);
 
-  layout_arrange(xdg->workspace);
+  on_new_view(xdg->workspace, xdg->view);
 }
 
 void on_unmap(struct wl_listener *listener, void *data) {
