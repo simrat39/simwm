@@ -14,7 +14,9 @@ int luaS_view_set_size(lua_State *L) {
 
   switch (view->type) {
   case SIMWM_VIEW_XDG:
+    wlr_xdg_toplevel_set_resizing(view->xdg->toplevel, true);
     wlr_xdg_toplevel_set_size(view->xdg->toplevel, width, height);
+    wlr_xdg_toplevel_set_resizing(view->xdg->toplevel, false);
     break;
   case SIMWM_VIEW_LAYER:
   case SIMWM_VIEW_POPUP:
