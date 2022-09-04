@@ -13,4 +13,8 @@ function Output:set_workspace(workspace)end
 ---@return table
 function Output:get_coords()end
 
+---Gets the width and height of the output 
+---@return table
+function Output:get_resolution()end
+
 return Output
