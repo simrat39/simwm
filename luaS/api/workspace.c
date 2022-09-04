@@ -36,7 +36,7 @@ void luaS_workspace_from_simwm_workspace(lua_State *L,
   lua_pushstring(L, workspace->name);
   lua_settable(L, -3);
 
-  lua_pushstring(L, "get_views");
+  lua_pushstring(L, "get_windows");
   lua_pushcfunction(L, luaS_workspace_get_windows);
   lua_settable(L, -3);
 
