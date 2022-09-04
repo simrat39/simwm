@@ -6,14 +6,14 @@ local Layout = {}
 ---Called when a new window is created.
 ---@param output Output
 ---@param workspace Workspace
----@param view Window
-function Layout.on_new_view(output, workspace, view) end
+---@param window Window
+function Layout.on_new_window(output, workspace, window) end
 
----Called when a new view is created.
+---Called when a new window is created.
 ---@param output Output
 ---@param workspace Workspace
----@param view Window
-function Layout.on_view_close(output, workspace, view) end
+---@param window Window
+function Layout.on_window_close(output, workspace, window) end
 
 ---Logic to arrange views in a workspae.
 ---@param output Output Output on which the workspace resides

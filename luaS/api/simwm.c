@@ -126,10 +126,10 @@ int register_layout_manager(lua_State *L) {
   lua_getfield(L, 1, "arrange");
   layout->arrange = luaL_ref(L, LUA_REGISTRYINDEX);
 
-  lua_getfield(L, 1, "on_new_view");
+  lua_getfield(L, 1, "on_new_window");
   layout->on_new_view = luaL_ref(L, LUA_REGISTRYINDEX);
 
-  lua_getfield(L, 1, "on_view_close");
+  lua_getfield(L, 1, "on_window_close");
   layout->on_view_close = luaL_ref(L, LUA_REGISTRYINDEX);
 
   wl_list_insert(&server->layouts, &layout->link);

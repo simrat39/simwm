@@ -73,7 +73,7 @@ end
 ---@param o Output
 ---@param ws Workspace
 ---@param win Window
-function M.on_new_view(o, ws, win)
+function M.on_new_window(o, ws, win)
   if not get_stack(ws) then
     set_stack(ws, {})
   end
@@ -96,7 +96,7 @@ end
 ---@param o Output
 ---@param ws Workspace
 ---@param win Window
-function M.on_view_close(o, ws, win)
+function M.on_window_close(o, ws, win)
   -- master was removed
   if win.userdata == get_master(ws).userdata then
     -- check if we have any views in the stack
