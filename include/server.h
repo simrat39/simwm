@@ -19,10 +19,12 @@ struct simwm_server {
   struct wlr_backend *backend;
   struct wlr_renderer *renderer;
   struct wlr_allocator *allocator;
-  struct wlr_output_layout *output_layout;
   struct wlr_scene *scene;
 
+  // Outputs
+  struct wlr_output_layout *output_layout;
   struct wl_list outputs;
+  struct simwm_output* focused_output;
   struct wl_listener new_output;
 
   struct wl_list views;
@@ -56,7 +58,7 @@ struct simwm_server {
   struct wl_list workspaces;
 
   struct wl_list layouts;
-  struct simwm_layout* current_layout;
+  struct simwm_layout *current_layout;
 
   struct lua_State *L;
 };

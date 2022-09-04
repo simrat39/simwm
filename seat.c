@@ -63,6 +63,7 @@ void seat_set_current_workspace(struct simwm_output *output, char *name) {
   }
 
   ws->output = output;
+  server->focused_output = output;
 
   struct simwm_workspace *last_ws = output->current_workspace;
 
