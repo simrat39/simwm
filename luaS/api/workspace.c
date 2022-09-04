@@ -1,11 +1,11 @@
 #include <includes.h>
 #include <lua.h>
-#include <luaS/api/view.h>
+#include <luaS/api/window.h>
 #include <luaS/utils/dump.h>
 #include <seat.h>
 #include <wlr/util/log.h>
 
-int luaS_workspace_get_views(lua_State *L) {
+int luaS_workspace_get_windows(lua_State *L) {
   lua_getfield(L, 1, "userdata");
   struct simwm_workspace *workspace = lua_touserdata(L, -1);
 
@@ -16,7 +16,7 @@ int luaS_workspace_get_views(lua_State *L) {
 
   wl_list_for_each(xdg_surface, &workspace->views, ws_link) {
     // Make output object and put it on top of the stack
-    luaS_view_from_simwm_view(L, xdg_surface->view);
+    luaS_window_from_simwm_xdg_surface(L, xdg_surface);
 
     // Table is now at -2 in the stack, pop the current element and add it to
     // the table.
@@ -37,7 +37,7 @@ void luaS_workspace_from_simwm_workspace(lua_State *L,
   lua_settable(L, -3);
 
   lua_pushstring(L, "get_views");
-  lua_pushcfunction(L, luaS_workspace_get_views);
+  lua_pushcfunction(L, luaS_workspace_get_windows);
   lua_settable(L, -3);
 
   lua_pushstring(L, "userdata");

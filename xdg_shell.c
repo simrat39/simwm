@@ -27,7 +27,7 @@ void on_map(struct wl_listener *listener, void *data) {
                                  keyboard->keycodes, keyboard->num_keycodes,
                                  &keyboard->modifiers);
 
-  on_new_view(xdg->workspace, xdg->view);
+  on_new_window(xdg->workspace, xdg);
 }
 
 void on_unmap(struct wl_listener *listener, void *data) {
@@ -40,7 +40,7 @@ void on_destroy(struct wl_listener *listener, void *data) {
   wlr_log(WLR_INFO, "Destroyed window: %s", xdg->toplevel->title);
 
   wl_list_remove(&xdg->ws_link);
-  on_view_close(xdg->workspace, xdg->view);
+  on_window_close(xdg->workspace, xdg);
 
   // FIXME: Why?
   if (xdg->workspace->last_focused_view == xdg->view) {
