@@ -52,6 +52,10 @@ void server_new_output(struct wl_listener *listener, void *data) {
 
   wl_list_insert(&server->outputs, &output->link);
   wlr_output_layout_add_auto(server->output_layout, wlr_output);
+
+  if (!server->focused_output) {
+    server->focused_output = output;
+  }
 }
 
 struct simwm_output *simwm_output_from_wlr_output(struct wlr_output *outpout) {
