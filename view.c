@@ -5,6 +5,8 @@
 #include <seat.h>
 #include <server.h>
 #include <view.h>
+#include <wayland-util.h>
+#include <wlr/util/log.h>
 
 struct simwm_view *view_at(double lx, double ly, struct wlr_surface **surface,
                            double *sx, double *sy) {
@@ -53,6 +55,10 @@ void focus_view(struct simwm_view *view, struct wlr_surface *surface) {
   switch (view->type) {
   case SIMWM_VIEW_XDG:
     wlr_scene_node_raise_to_top(&view->xdg->scene->node);
+
+    // Move to top
+    wl_list_remove(&view->xdg->ws_link);
+    wl_list_insert(&view->xdg->workspace->views, &view->xdg->ws_link);
 
     wlr_xdg_toplevel_set_activated(view->xdg->toplevel, true);
     seat_kb_notify_enter(view->xdg->toplevel->base->surface);

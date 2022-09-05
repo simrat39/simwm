@@ -14,7 +14,7 @@ for i = 1, 10, 1 do
 end
 
 sim.map({ "Alt" }, "Return", function()
-  sim.spawn("alacritty")
+  sim.spawn("kitty")
 end)
 
 sim.map({ "Alt" }, "w", function()

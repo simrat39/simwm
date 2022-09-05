@@ -18,7 +18,6 @@
 
 void on_map(struct wl_listener *listener, void *data) {
   struct simwm_xdg_surface *xdg = wl_container_of(listener, xdg, map);
-  wlr_log(WLR_INFO, "Mapped window: %s", xdg->toplevel->title);
 
   focus_view(xdg->view, xdg->toplevel->base->surface);
 
@@ -33,22 +32,25 @@ void on_map(struct wl_listener *listener, void *data) {
 void on_unmap(struct wl_listener *listener, void *data) {
   struct simwm_xdg_surface *xdg = wl_container_of(listener, xdg, unmap);
   wlr_log(WLR_INFO, "Unmapped window: %s", xdg->toplevel->title);
-}
-
-void on_destroy(struct wl_listener *listener, void *data) {
-  struct simwm_xdg_surface *xdg = wl_container_of(listener, xdg, destroy);
-  wlr_log(WLR_INFO, "Destroyed window: %s", xdg->toplevel->title);
 
   // Remove from the list of views of first. We do this because the lua side
   // might call workspace.get_windows() and we don't wan't our view showing
   // there.
   wl_list_remove(&xdg->ws_link);
-  on_window_close(xdg->workspace, xdg);
 
-  // FIXME: Why?
-  if (xdg->workspace->last_focused_view == xdg->view) {
+  if (wl_list_length(&xdg->workspace->views) == 0) {
     xdg->workspace->last_focused_view = NULL;
+  } else {
+    struct simwm_xdg_surface *n =
+        wl_container_of((&xdg->workspace->views)->next, n, ws_link);
+    focus_view(n->view, n->toplevel->base->surface);
   }
+}
+
+void on_destroy(struct wl_listener *listener, void *data) {
+  struct simwm_xdg_surface *xdg = wl_container_of(listener, xdg, destroy);
+
+  on_window_close(xdg->workspace, xdg);
 
   wl_list_remove(&xdg->map.link);
   wl_list_remove(&xdg->unmap.link);
