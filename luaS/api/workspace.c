@@ -31,8 +31,11 @@ int luaS_workspace_get_focused_window(lua_State *L) {
   lua_getfield(L, 1, "userdata");
   struct simwm_workspace *workspace = lua_touserdata(L, -1);
 
-  luaS_window_from_simwm_xdg_surface(L, workspace->last_focused_view->xdg);
-  return 1;
+  if (workspace->last_focused_view) {
+    luaS_window_from_simwm_xdg_surface(L, workspace->last_focused_view->xdg);
+    return 1;
+  }
+  return 0;
 }
 
 // Sets up a simwm_output table in lua and puts it on top of the stack.

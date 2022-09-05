@@ -39,6 +39,9 @@ void on_destroy(struct wl_listener *listener, void *data) {
   struct simwm_xdg_surface *xdg = wl_container_of(listener, xdg, destroy);
   wlr_log(WLR_INFO, "Destroyed window: %s", xdg->toplevel->title);
 
+  // Remove from the list of views of first. We do this because the lua side
+  // might call workspace.get_windows() and we don't wan't our view showing
+  // there.
   wl_list_remove(&xdg->ws_link);
   on_window_close(xdg->workspace, xdg);
 

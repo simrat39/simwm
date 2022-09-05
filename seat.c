@@ -76,7 +76,7 @@ void seat_set_current_workspace(struct simwm_output *output, char *name) {
     wlr_log(WLR_INFO, "View focused before switching %p",
             last_ws->last_focused_view);
 
-    /* // disable last focused client on old workspace */
+    // disable last focused client on old workspace
     if (last_ws->last_focused_view) {
       seat_kb_notify_clear_focus();
       wlr_xdg_toplevel_set_activated(last_ws->last_focused_view->xdg->toplevel,
@@ -91,7 +91,8 @@ void seat_set_current_workspace(struct simwm_output *output, char *name) {
 
   // enable last focused client on new workspace
   if (ws->last_focused_view) {
-    focus_view(ws->last_focused_view, ws->last_focused_view->xdg->toplevel->base->surface);
+    focus_view(ws->last_focused_view,
+               ws->last_focused_view->xdg->toplevel->base->surface);
   }
 
   output->current_workspace = ws;
