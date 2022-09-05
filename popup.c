@@ -14,8 +14,6 @@ void on_popup_new_popup(struct wl_listener *listener, void *data) {
   struct wlr_xdg_popup *xdg_popup = data;
 
   create_popup(xdg_popup, popup->parent);
-
-  wlr_log(WLR_INFO, "nested POPUP create");
 }
 
 void on_popup_destroy(struct wl_listener *listener, void *data) {

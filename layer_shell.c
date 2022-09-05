@@ -73,7 +73,6 @@ void on_layer_surface_map(struct wl_listener *listener, void *data) {
 void on_layer_surface_unmap(struct wl_listener *listener, void *data) {
   struct simwm_layer_surface *layer = wl_container_of(listener, layer, unmap);
   configure_all_layers(layer->output);
-  wlr_log(WLR_INFO, "unmapped");
 }
 
 void on_layer_surface_destroy(struct wl_listener *listener, void *data) {

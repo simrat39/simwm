@@ -25,7 +25,6 @@ void server_new_output(struct wl_listener *listener, void *data) {
   struct wlr_output *wlr_output = data;
 
   wlr_output_init_render(wlr_output, server->allocator, server->renderer);
-  wlr_log(WLR_ERROR, "%d", wlr_output->refresh);
 
   if (!wl_list_empty(&wlr_output->modes)) {
     struct wlr_output_mode *mode = wlr_output_preferred_mode(wlr_output);

@@ -35,15 +35,12 @@ int get_outputs(lua_State *L) {
 }
 
 int get_focused_output(lua_State *L) {
-  wlr_log(WLR_INFO, "WAS CALLED");
   luaS_output_from_simwm_output(L, server->focused_output);
 
   return 1;
 }
 
 int add_workspace(lua_State *L) {
-  wlr_log(WLR_INFO, "ADDING WORKSPACE");
-
   if (!lua_isstring(L, -1)) {
     wlr_log(WLR_ERROR, "Workspace name needs to be a string");
   }
@@ -71,8 +68,6 @@ enum wlr_keyboard_modifier modifier_from_string(const char *str) {
 }
 
 int add_keymap(lua_State *L) {
-  wlr_log(WLR_INFO, "ADDING ALT KEYMAP");
-
   if (!lua_istable(L, 1)) {
     wlr_log(WLR_ERROR, "Modifiers need to be a table");
     return 0;
@@ -85,10 +80,8 @@ int add_keymap(lua_State *L) {
   for (int i = 1; i <= modifier_count; i++) {
     lua_rawgeti(L, 1, i);
     const char *modifier_string = lua_tostring(L, -1);
-    wlr_log(WLR_INFO, "%s", modifier_string);
 
     int wlr_modifier = modifier_from_string(modifier_string);
-    wlr_log(WLR_INFO, "%i", wlr_modifier);
     modifiers |= wlr_modifier;
   }
 
@@ -100,7 +93,6 @@ int add_keymap(lua_State *L) {
   xkb_keysym_t keysym = xkb_keysym_from_name(keyname, XKB_KEYSYM_NO_FLAGS);
 
   if (!lua_isfunction(L, 3)) {
-    wlr_log(WLR_ERROR, "Where callback?");
     return 0;
   }
   // Push callback to top of stack cause luaL_ref takes the top one
@@ -123,7 +115,6 @@ int add_keymap(lua_State *L) {
 }
 
 int register_layout_manager(lua_State *L) {
-  dumpstack(L);
   struct simwm_layout *layout = calloc(1, sizeof(struct simwm_layout));
 
   lua_getfield(L, 1, "name");

@@ -73,9 +73,6 @@ void seat_set_current_workspace(struct simwm_output *output, char *name) {
       return;
     }
 
-    wlr_log(WLR_INFO, "View focused before switching %p",
-            last_ws->last_focused_view);
-
     // disable last focused client on old workspace
     if (last_ws->last_focused_view) {
       seat_kb_notify_clear_focus();

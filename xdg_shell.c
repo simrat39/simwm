@@ -31,7 +31,6 @@ void on_map(struct wl_listener *listener, void *data) {
 
 void on_unmap(struct wl_listener *listener, void *data) {
   struct simwm_xdg_surface *xdg = wl_container_of(listener, xdg, unmap);
-  wlr_log(WLR_INFO, "Unmapped window: %s", xdg->toplevel->title);
 
   // Remove from the list of views of first. We do this because the lua side
   // might call workspace.get_windows() and we don't wan't our view showing
