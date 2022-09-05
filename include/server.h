@@ -22,10 +22,9 @@ struct simwm_server {
   // Outputs
   struct wlr_output_layout *output_layout;
   struct wl_list outputs;
-  struct simwm_output* focused_output;
+  struct simwm_output *focused_output;
   struct wl_listener new_output;
 
-  struct wl_list views;
   struct wlr_xdg_shell *xdg_shell;
   struct wl_listener new_xdg_surface;
 
