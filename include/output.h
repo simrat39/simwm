@@ -9,10 +9,9 @@ struct simwm_output {
   struct wl_list link;
 
   struct wlr_output *wlr_output;
-  struct simwm_server *server;
   struct wl_listener frame;
 
-  struct simwm_workspace* current_workspace;
+  struct simwm_workspace *current_workspace;
 };
 
 void server_new_output(struct wl_listener *, void *);
