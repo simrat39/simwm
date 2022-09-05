@@ -1,6 +1,7 @@
 #include <includes.h>
 #include <lauxlib.h>
 #include <lua.h>
+#include <luaS/api/workspace.h>
 #include <output.h>
 #include <seat.h>
 #include <server.h>
@@ -41,6 +42,13 @@ int get_coords(lua_State *L) {
   lua_pushnumber(L, (float)ly);
   lua_setfield(L, -2, "y");
 
+  return 1;
+}
+int get_current_workspace(lua_State *L) {
+  lua_getfield(L, -1, "userdata");
+  struct simwm_output *o = lua_touserdata(L, -1);
+
+  luaS_workspace_from_simwm_workspace(L, o->current_workspace);
   return 1;
 }
 
@@ -86,6 +94,10 @@ void luaS_output_from_simwm_output(lua_State *L, struct simwm_output *output) {
 
   lua_pushstring(L, "get_resolution");
   lua_pushcfunction(L, get_resolution);
+  lua_settable(L, -3);
+
+  lua_pushstring(L, "get_current_workspace");
+  lua_pushcfunction(L, get_current_workspace);
   lua_settable(L, -3);
 
   lua_pushstring(L, "set_workspace");

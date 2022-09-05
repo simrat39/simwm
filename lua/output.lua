@@ -7,14 +7,18 @@ local Output = {}
 
 ---Set the current workspace for the output.
 ---@param workspace string|number Name of the workspace
-function Output:set_workspace(workspace)end
+function Output:set_workspace(workspace) end
 
 ---Gets the xy coordinates of the output
 ---@return table
-function Output:get_coords()end
+function Output:get_coords() end
 
----Gets the width and height of the output 
+---Gets the width and height of the output
 ---@return table
-function Output:get_resolution()end
+function Output:get_resolution() end
+
+---Gets the current workspace on the output.
+---@return Workspace
+function Output:get_current_workspace() end
 
 return Output

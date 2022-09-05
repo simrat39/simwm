@@ -31,6 +31,15 @@ int luaS_window_set_pos(lua_State *L) {
   return 0;
 }
 
+int luaS_window_close(lua_State *L) {
+  lua_getfield(L, 1, "userdata");
+  struct simwm_xdg_surface *window = lua_touserdata(L, -1);
+
+  wlr_xdg_toplevel_send_close(window->toplevel);
+
+  return 0;
+}
+
 // Sets up a simwm_view table in lua and puts it on top of the stack.
 void luaS_window_from_simwm_xdg_surface(lua_State *L,
                                         struct simwm_xdg_surface *window) {
@@ -46,6 +55,10 @@ void luaS_window_from_simwm_xdg_surface(lua_State *L,
 
   lua_pushstring(L, "set_size");
   lua_pushcfunction(L, luaS_window_set_size);
+  lua_settable(L, -3);
+
+  lua_pushstring(L, "close");
+  lua_pushcfunction(L, luaS_window_close);
   lua_settable(L, -3);
 
   lua_pushstring(L, "userdata");

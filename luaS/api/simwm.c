@@ -34,6 +34,13 @@ int get_outputs(lua_State *L) {
   return 1;
 }
 
+int get_focused_output(lua_State *L) {
+  wlr_log(WLR_INFO, "WAS CALLED");
+  luaS_output_from_simwm_output(L, server->focused_output);
+
+  return 1;
+}
+
 int add_workspace(lua_State *L) {
   wlr_log(WLR_INFO, "ADDING WORKSPACE");
 
@@ -159,6 +166,9 @@ int spawn(lua_State *L) {
 void luaS_simwm_init() {
   lua_pushcfunction(server->L, get_outputs);
   lua_setglobal(server->L, "get_outputs");
+
+  lua_pushcfunction(server->L, get_focused_output);
+  lua_setglobal(server->L, "get_focused_output");
 
   lua_pushcfunction(server->L, add_workspace);
   lua_setglobal(server->L, "add_workspace");

@@ -17,6 +17,14 @@ sim.map({ "Alt" }, "Return", function()
   sim.spawn("alacritty")
 end)
 
+sim.map({ "Alt" }, "w", function()
+  local o = sim.get_focused_output()
+  local ws = o:get_current_workspace()
+  local win = ws:get_focused_window()
+
+  win:close()
+end)
+
 outputs[1]:set_workspace("1")
 
 sim.register_layout_manager(dwm)

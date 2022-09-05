@@ -13,4 +13,7 @@ function Window:set_pos(x, y)end
 ---@param height number
 function Window:set_size(width, height)end
 
+---Close the window.
+function Window:close()end
+
 return Window

@@ -7,6 +7,12 @@ function M.get_outputs()
   return get_outputs()
 end
 
+---Returns the currently focused output
+---@return Output
+function M.get_focused_output()
+  return get_focused_output()
+end
+
 ---Runs a command through /bin/sh
 ---@param command string
 function M.spawn(command)

@@ -7,4 +7,8 @@ local Workspace = {}
 ---@return any[]
 function Workspace:get_views()end
 
+---Gets the currently focused window on the workspace
+---@return Window
+function Workspace:get_focused_window()end
+
 return Workspace
