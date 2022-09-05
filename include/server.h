@@ -13,8 +13,6 @@ enum simwl_cursor_mode {
 };
 
 struct simwm_server {
-  char *name;
-
   struct wl_display *wl_display;
   struct wlr_backend *backend;
   struct wlr_renderer *renderer;
